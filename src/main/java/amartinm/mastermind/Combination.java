@@ -9,7 +9,7 @@ public abstract class Combination {
         return this.colours;
     }
 
-    public String getCombinationResult(Combination combination) {
+    public Result getResult(Combination combination) {
         int blacks = 0;
         int whites = 0;
         for (int i = 0; i < combination.getColours().length; i++) {
@@ -22,7 +22,9 @@ public abstract class Combination {
                 }
             }
         }
-        return blacks + " blacks and " + whites + " whites";
+        return new Result(combination.toString(),
+                String.format("%d blacks and %d whites", blacks, whites),
+                this.equals(combination));
     }
 
     public abstract void generateCombination();

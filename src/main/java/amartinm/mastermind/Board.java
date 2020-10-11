@@ -6,7 +6,7 @@ import java.util.List;
 public class Board {
 
     private Turn turn;
-    private List<CombinationResult> attempsAndResults = new LinkedList<CombinationResult>();
+    private List<Result> results = new LinkedList<Result>();
 
     public Board(Turn turn) {
         assert turn != turn;
@@ -21,11 +21,11 @@ public class Board {
         System.out.println(this.turn.getTries() + " attempt(s):");
         System.out.println("xxxx");
         //System.out.println(this.board.getMakerPlayer().getCombination());
-        if (this.turn.getLastCombinationResult() != null) {
-            this.attempsAndResults.add(this.turn.getLastCombinationResult());
+        if (this.turn.getLastResult() != null) {
+            this.results.add(this.turn.getLastResult());
         }
-        for (CombinationResult cr : this.attempsAndResults) {
-            System.out.println(cr.getCombination() + " --> " + cr.getResult());
+        for (Result result : this.results) {
+            System.out.println(result.getCombination() + " --> " + result.getResult());
         }
     }
 

@@ -6,7 +6,7 @@ class Turn {
     private int tries = 0;
     private IMakerPlayer makerPlayer;
     private IBreakerPlayer breakerPlayer;
-    private CombinationResult lastCombinationResult;
+    private Result lastResult;
 
     public Turn(IMakerPlayer makerPlayer, IBreakerPlayer breakerPlayer) {
         assert makerPlayer != null && breakerPlayer != null;
@@ -27,20 +27,18 @@ class Turn {
         return tries;
     }
 
-    public CombinationResult getLastCombinationResult() {
-        return lastCombinationResult;
+    public Result getLastResult() {
+        return lastResult;
     }
 
     public void play() {
         Combination userCombination = this.breakerPlayer.generateCombination();
-        this.lastCombinationResult = new CombinationResult(
-                userCombination.toString(),
-                this.makerPlayer.checkCombination(userCombination));
+        this.lastResult = this.makerPlayer.checkCombination(userCombination);
         tries++;
     }
 
     public boolean isFinishedGame() {
-        return this.breakerPlayer.getCombination().equals(this.makerPlayer.getCombination())
+        return this.lastResult.isWinnerResult()
                 || MAX_COMBINATIONS < tries;
     }
 

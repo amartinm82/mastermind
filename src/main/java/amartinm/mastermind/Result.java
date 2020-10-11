@@ -1,15 +1,17 @@
 package amartinm.mastermind;
 
-public class CombinationResult {
+public class Result {
 
     private String combination;
     private String result;
+    private boolean isWinnerResult;
 
-    public CombinationResult(String combination, String result) {
+    public Result(String combination, String result, boolean isWinnerResult) {
         assert combination != null && result != null;
 
         this.combination = combination;
         this.result = result;
+        this.isWinnerResult = isWinnerResult;
     }
 
     public String getCombination() {
@@ -18,5 +20,9 @@ public class CombinationResult {
 
     public String getResult() {
         return result;
+    }
+
+    public boolean isWinnerResult() {
+        return isWinnerResult;
     }
 }

@@ -32,7 +32,6 @@ public class Mastermind {
         System.out.print("RESUME? (y/n): ");
         Scanner scanner = new Scanner(System.in);
         String response = scanner.nextLine();
-        //scanner.close();
         return response.equalsIgnoreCase("Y");
     }
 
