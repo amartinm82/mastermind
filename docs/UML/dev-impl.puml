@@ -1,0 +1,11 @@
+@startuml
+
+package amartinm.mastermind
+package java.util
+package java.io
+
+[mastermind.jar] *-down-> amartinm.mastermind
+[mastermind.jar] *-down-> java.util
+[mastermind.jar] *-down-> java.io
+
+@enduml

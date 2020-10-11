@@ -25,12 +25,12 @@ public class Board {
             this.results.add(this.turn.getLastResult());
         }
         for (Result result : this.results) {
-            System.out.println(result.getCombination() + " --> " + result.getResult());
+            System.out.println(result);
         }
     }
 
     public void writeWinner() {
-        if (this.turn.getBreakerPlayer().getCombination().equals(this.turn.getMakerPlayer().getCombination())) {
+        if (this.turn.getLastResult().isWinnerResult()) {
             System.out.println("You've won!!! ;-)");
         } else {
             System.out.println("You've lost!!! :-(");

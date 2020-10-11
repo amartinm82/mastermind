@@ -1,8 +1,8 @@
 package amartinm.mastermind;
 
-class Turn {
+public class Turn {
 
-    private final int MAX_COMBINATIONS = 10;
+    private static final int MAX_COMBINATIONS = 10;
     private int tries = 0;
     private IMakerPlayer makerPlayer;
     private IBreakerPlayer breakerPlayer;
@@ -13,14 +13,6 @@ class Turn {
 
         this.makerPlayer = makerPlayer;
         this.breakerPlayer = breakerPlayer;
-    }
-
-    public IMakerPlayer getMakerPlayer() {
-        return makerPlayer;
-    }
-
-    public IBreakerPlayer getBreakerPlayer() {
-        return breakerPlayer;
     }
 
     public int getTries() {
@@ -41,6 +33,5 @@ class Turn {
         return this.lastResult.isWinnerResult()
                 || MAX_COMBINATIONS < tries;
     }
-
 
 }

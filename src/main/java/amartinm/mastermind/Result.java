@@ -14,15 +14,12 @@ public class Result {
         this.isWinnerResult = isWinnerResult;
     }
 
-    public String getCombination() {
-        return combination;
-    }
-
-    public String getResult() {
-        return result;
-    }
-
     public boolean isWinnerResult() {
         return isWinnerResult;
+    }
+
+    @Override
+    public String toString() {
+        return this.combination + " --> " + this.result;
     }
 }

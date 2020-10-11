@@ -1,0 +1,164 @@
+@startuml
+package amartinm.mastermind #DDDDDD {
+
+    class Mastermind {
+        - Board board;
+        - Turn turn;
+        - IMakerPlayer makerPlayer;
+        - IBreakerPlayer breakerPlayer;
+
+        - void play();
+        - void playGame();
+        - boolean isResumedGame();
+        + {static} void main(String[] args);
+    }
+
+    class Board {
+        - Turn turn;
+        - List<Result> results;
+
+        + Board(Turn turn);
+        + void showBoard();
+        + void writeWinner();
+    }
+    
+    class Turn {
+    
+        - {static} final int MAX_COMBINATIONS=10;
+        - int tries;
+        - IMakerPlayer makerPlayer;
+        - IBreakerPlayer breakerPlayer;
+        - Result lastResult;
+    
+        + Turn(IMakerPlayer makerPlayer, IBreakerPlayer breakerPlayer);
+        + int getTries();
+        + Result getLastResult();
+        + void play();
+        + boolean isFinishedGame();
+    
+    }
+    
+    class Result {
+    
+        - String combination;
+        - String result;
+        - boolean isWinnerResult;
+    
+        + Result(String combination, String result, boolean isWinnerResult);
+        + boolean isWinnerResult();
+        + String toString();
+    }
+
+    interface IPlayer {
+        + Combination getCombination();
+    }
+
+    abstract class Player implements IPlayer {
+        # Combination combination;
+
+        + Combination getCombination();
+    }
+
+    interface IMakerPlayer  extends IPlayer {
+        + Result checkCombination(Combination combination);
+    }
+
+    interface IBreakerPlayer extends IPlayer {
+        + Combination generateCombination();
+    }
+
+    abstract class Combination {
+
+        # {static} final int MAX_SIZE = 4;
+        # Colour[] colours;
+
+        + {abstract} void generateCombination();
+        + Colour[] getColours()
+        + Result getResult(Combination combination)
+        + boolean equals(Object otherCombination);
+        # boolean isValidCombination();
+        + String toString();
+    }
+
+    enum Colour {
+        RED('r'),
+        BLUE('b'),
+        YELLOW('y'),
+        GREEN('g'),
+        ORANGE('o'),
+        PURPLE('p');
+
+        - char symbol;
+
+        - Colour(char symbol);
+        + char getSymbol();
+        + {static} Colour getRandomColour();
+        + {static} Colour valueOf(char colour);
+    }
+
+    class RandomCombination extends Combination {
+        + void generateCombination() ;
+    }
+
+    class UserCombination extends Combination {
+        + void generateCombination();
+    }
+
+    abstract class MachinePlayer extends Player {
+        + MachinePlayer();
+    }
+
+    abstract class UserPlayer extends Player {
+        + UserPlayer();
+    }
+
+    class MachineMakerPlayer extends MachinePlayer implements IMakerPlayer {
+        + Result checkCombination(Combination combination);
+    }
+
+    class UserBreakerPlayer extends UserPlayer  implements IBreakerPlayer {
+        + Combination generateCombination();
+    }
+
+    abstract class BreakerPlayer extends Player implements IBreakerPlayer {}
+
+    Mastermind *-down- Board
+    Mastermind *-down- Turn
+    Mastermind *-down- IMakerPlayer
+    Mastermind *-down- IBreakerPlayer
+    
+    Board o-down- Turn
+    Board -down-> Result
+
+    Turn o-down- IMakerPlayer
+    Turn o-down- IBreakerPlayer
+    Turn -down-> Result
+
+    IMakerPlayer .down.> Combination
+    IMakerPlayer .down.> Result
+
+    IPlayer .down.> Combination
+
+    Player *-down- Combination
+
+    IBreakerPlayer .down.> Combination
+
+    Combination *-down-> Colour
+    Combination .down.-> Result
+
+    UserCombination *-down-> Colour
+    RandomCombination *-down-> Colour
+
+    MachinePlayer *-down- RandomCombination
+
+    UserPlayer *-down- UserCombination
+
+    MachineMakerPlayer .down.> Result
+    MachineMakerPlayer .down.> Combination
+
+    UserBreakerPlayer *-down-> Combination
+
+
+}
+
+@enduml

@@ -1,0 +1,5 @@
+@startuml
+node PC
+[mastermind.jar]
+PC *-down-> [mastermind.jar]
+@enduml
