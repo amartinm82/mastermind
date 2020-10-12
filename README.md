@@ -36,6 +36,13 @@
 <li><a href="#development-implementation-view">Developmnet/Implementation view</a></li>
 <li><a href="#physical-deployment-view">Physical/Deployment view</a></li>
 <li><a href="#process-view">Process view</a></li>
+<li><a href="#instructions">Instructions</a>
+<ul class="sectlevel2">
+<li><a href="#install">Install</a></li>
+<li><a href="#usage">Usage</a></li>
+<li><a href="#tests">Run tests</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -196,13 +203,10 @@
 </div>
 </div>
 </div>
-
-
-
 <div class="sect1">
-<h2 id="process-view">Instructions</h2>
+<h2 id="instructions">Instructions</h2>
 <div class="sect2">
-<h3 id="Redesign">Install</h3>
+<h3 id="install">Install</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -210,7 +214,7 @@
 </li>
 </ul>
 </div>
-<h3 id="Redesign">Usage</h3>
+<h3 id="usage">Usage</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -221,7 +225,7 @@
 </li>
 </ul>
 </div>
-<h3 id="Redesign">Run tests</h3>
+<h3 id="tests">Run tests</h3>
 <div class="ulist">
 <ul>
 <li>
