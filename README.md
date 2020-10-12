@@ -201,27 +201,35 @@
 
 <div class="sect1">
 <h2 id="process-view">Instructions</h2>
-<div class="sectionbody">
+<div class="sect2">
+<h3 id="Redesign">Install</h3>
 <div class="ulist">
+<ul>
+<li>
+<p><em>mvn install</em></p>
+</li>
+</ul>
+</div>
+<h3 id="Redesign">Usage</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><em>mvn package</em></p>
+</li>
+<li>
+<p><em>java -jar target/mastermind-1.0-SNAPSHOT.jar</em></p>
+</li>
+</ul>
+</div>
+<h3 id="Redesign">Run tests</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><em>mvn test</em></p>
+</li>
+</ul>
+</div>
 
-## Install
-
-```sh
-mvn install
-```
-
-## Usage
-
-```sh
-mvn package
-java -jar target/mastermind-1.0-SNAPSHOT.jar
-```
-
-## Run tests
-
-```sh
-mvn test
-```
 
 ## Author
 
