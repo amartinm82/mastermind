@@ -40,6 +40,7 @@
 </ul>
 </li>
 </ul>
+<li><a href="#Details">Details</a></li>
 </div>
 </div>
 <div id="content">
@@ -231,7 +232,7 @@
 </div>
 
 
-## Author
+## Details
 
 👤 **Álvaro Martín Martín**
 
