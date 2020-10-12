@@ -12,13 +12,9 @@
 <body class="book">
 <div id="header">
 <h1>Master Mind. Solución 1.1. <strong>domainModel</strong></h1>
-<div class="details">
-<span id="author" class="author">Álvaro Martín Martín</span><br>
-<span id="email" class="email"><a href="mailto:amartinm82@gmail.com">amartinm82@gmail.com</a></span><br>
-<span id="revnumber">version 0.0.1</span>
-</div>
-<div id="toc" class="toc">
-<div id="mastermindtitle">Índice</div>
+
+<div id="mastermind" class="mastermind">
+<div id="mastermindtitle">Index</div>
 <ul class="sectlevel1">
 <li><a href="#domain-model"><strong>Domain model</strong></a></li>
 <li><a href="#requisites-1">1. <strong>Basic</strong> Requisites </a></li>
@@ -237,19 +233,18 @@
 
 ## Author
 
-👤 **Álvaro Martín**
+👤 **Álvaro Martín Martín**
 
 * Github: [@amartinm82](https://github.com/amartinm82)
-
-
-Note that you should have to [install JDK 8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) and [Maven](https://maven.apache.org/install.html) as prerequisite.
+* Email: [amartinm82@gmail.com](mailto:amartinm82@gmail.com)
+* Version: 0.0.1
+* Notes: Note that you should have to [install JDK 8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) and [Maven](https://maven.apache.org/install.html) as prerequisite.
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 0.0.1<br>
 Last updated 2020-10-05 20:47:29 +0200
 </div>
 </div>
