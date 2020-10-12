@@ -1,5 +1,10 @@
 @startuml
-node PC
+node node #DDDDDD [
+    <b>Personal Computer</b>
+    ----
+    memory : xxx Mb
+    cpu : xxx GHz
+]
 [mastermind.jar]
-PC *-down-> [mastermind.jar]
+node *-down-> [mastermind.jar]
 @enduml
