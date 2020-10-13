@@ -20,7 +20,6 @@ public class Board {
         System.out.println();
         System.out.println(this.turn.getTries() + " attempt(s):");
         System.out.println("xxxx");
-        //System.out.println(this.board.getMakerPlayer().getCombination());
         if (this.turn.getLastResult() != null) {
             this.results.add(this.turn.getLastResult());
         }
