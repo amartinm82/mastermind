@@ -4,8 +4,6 @@ package amartinm.mastermind #DDDDDD {
     class Mastermind {
         - Board board;
         - Turn turn;
-        - IMakerPlayer makerPlayer;
-        - IBreakerPlayer breakerPlayer;
 
         - void play();
         - void playGame();
@@ -124,14 +122,12 @@ package amartinm.mastermind #DDDDDD {
 
     Mastermind *-down- Board
     Mastermind *-down- Turn
-    Mastermind *-down- IMakerPlayer
-    Mastermind *-down- IBreakerPlayer
-    
+
     Board o-down- Turn
     Board -down-> Result
 
-    Turn o-down- IMakerPlayer
-    Turn o-down- IBreakerPlayer
+    Turn *-down- IMakerPlayer
+    Turn *-down- IBreakerPlayer
     Turn -down-> Result
 
     IMakerPlayer .down.> Combination

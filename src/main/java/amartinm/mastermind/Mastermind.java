@@ -6,8 +6,6 @@ public class Mastermind {
 
     private Board board;
     private Turn turn;
-    private IMakerPlayer makerPlayer;
-    private IBreakerPlayer breakerPlayer;
 
     private void play() {
         do {
@@ -16,10 +14,7 @@ public class Mastermind {
     }
 
     private void playGame() {
-        this.makerPlayer = new MachineMakerPlayer();
-        this.makerPlayer.getCombination().generateCombination();
-        this.breakerPlayer = new UserBreakerPlayer();
-        this.turn = new Turn(this.makerPlayer, this.breakerPlayer);
+        this.turn = new Turn();
         this.board = new Board(turn);
         do {
             this.board.showBoard();

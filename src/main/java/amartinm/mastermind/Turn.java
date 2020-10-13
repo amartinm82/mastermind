@@ -8,11 +8,10 @@ public class Turn {
     private IBreakerPlayer breakerPlayer;
     private Result lastResult;
 
-    public Turn(IMakerPlayer makerPlayer, IBreakerPlayer breakerPlayer) {
-        assert makerPlayer != null && breakerPlayer != null;
-
-        this.makerPlayer = makerPlayer;
-        this.breakerPlayer = breakerPlayer;
+    public Turn() {
+        this.makerPlayer = new MachineMakerPlayer();
+        this.makerPlayer.getCombination().generateCombination();
+        this.breakerPlayer = new UserBreakerPlayer();
     }
 
     public int getTries() {
