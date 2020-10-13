@@ -19,7 +19,10 @@ public class Board {
     public void showBoard() {
         System.out.println();
         System.out.println(this.turn.getTries() + " attempt(s):");
-        System.out.println("xxxx");
+        for (int i = 0; i < Combination.MAX_SIZE; i++) {
+            System.out.print("x");
+        }
+        System.out.println();
         if (this.turn.getLastResult() != null) {
             this.results.add(this.turn.getLastResult());
         }

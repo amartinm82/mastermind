@@ -39,10 +39,10 @@ package amartinm.mastermind #DDDDDD {
     class Result {
     
         - String combination;
-        - String result;
-        - boolean isWinnerResult;
-    
-        + Result(String combination, String result, boolean isWinnerResult);
+        - int blacks;
+        - int whites;
+
+        + Result(String combination, int blacks, int whites);
         + boolean isWinnerResult();
         + String toString();
     }
@@ -117,8 +117,6 @@ package amartinm.mastermind #DDDDDD {
     class UserBreakerPlayer extends UserPlayer  implements IBreakerPlayer {
         + Combination generateCombination();
     }
-
-    abstract class BreakerPlayer extends Player implements IBreakerPlayer {}
 
     Mastermind *-down- Board
     Mastermind *-down- Turn

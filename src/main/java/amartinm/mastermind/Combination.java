@@ -22,9 +22,7 @@ public abstract class Combination {
                 }
             }
         }
-        return new Result(combination.toString(),
-                String.format("%d blacks and %d whites", blacks, whites),
-                this.equals(combination));
+        return new Result(combination.toString(), blacks, whites);
     }
 
     public abstract void generateCombination();
