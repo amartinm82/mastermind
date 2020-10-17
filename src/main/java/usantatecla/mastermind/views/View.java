@@ -2,33 +2,30 @@ package usantatecla.mastermind.views;
 
 import usantatecla.mastermind.models.Game;
 
-public class View {
+public abstract class View {
 
-	protected Game game;
+    protected Game game;
 
-	private StartView startView;
+    public View(Game game) {
+        this.game = game;
+    }
 
-	private ProposalView proposalView;
+    public void interact() {
+        boolean newGame;
+        do {
+            this.start();
+            boolean finished;
+            do {
+                finished = this.play();
+            } while (!finished);
+            newGame = this.isNewGame();
+        } while (newGame);
+    }
 
-	private ResumeView resumeView;
+    protected abstract void start();
 
-	public View(Game game) {
-		this.game = game;
-		this.startView = new StartView();
-		this.proposalView = new ProposalView(this.game);
-		this.resumeView = new ResumeView(this.game);
-	}
+    protected abstract boolean play();
 
-	public void interact() {
-		boolean newGame;
-		do {
-			this.startView.interact();
-			boolean finished;
-			do {
-				finished = this.proposalView.interact();
-			} while (!finished);
-			newGame = this.resumeView.interact();
-		} while (newGame);
-	}
+    protected abstract boolean isNewGame();
 
 }
