@@ -3,16 +3,11 @@ package usantatecla.mastermind;
 import usantatecla.mastermind.models.Game;
 import usantatecla.mastermind.views.console.View;
 
-public class ConsoleMastermind {
+public class ConsoleMastermind extends Mastermind {
 
-    private View view;
-
-    private ConsoleMastermind() {
-        this.view = new View(new Game());
-    }
-
-    private void play() {
-        this.view.interact();
+    @Override
+    protected View createView(Game game) {
+        return new View(game);
     }
 
     public static void main(String[] args) {
