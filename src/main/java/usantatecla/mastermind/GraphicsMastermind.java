@@ -1,14 +1,13 @@
 package usantatecla.mastermind;
 
-import usantatecla.mastermind.controllers.PlayController;
-import usantatecla.mastermind.controllers.ResumeController;
+import usantatecla.mastermind.controllers.Logic;
 import usantatecla.mastermind.views.graphics.View;
 
 public class GraphicsMastermind extends Mastermind {
 
     @Override
-    protected View createView(PlayController playController, ResumeController resumeController) {
-        return new View(playController, resumeController);
+    protected View createView(Logic logic) {
+        return new View(logic);
     }
 
     public static void main(String[] args) {

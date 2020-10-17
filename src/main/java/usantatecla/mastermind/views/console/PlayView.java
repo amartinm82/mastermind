@@ -1,19 +1,16 @@
 package usantatecla.mastermind.views.console;
 
-import usantatecla.mastermind.controllers.PlayController;
+import usantatecla.mastermind.controllers.Logic;
 import usantatecla.mastermind.models.ProposedCombination;
 import usantatecla.utils.Console;
 
-class PlayView {
+class PlayView extends SubView {
 
-    private final PlayController playController;
     private final SecretCombinationView secretCombinationView;
     private final Console console;
 
-    PlayView(PlayController playController) {
-        assert playController != null;
-
-        this.playController = playController;
+    PlayView(Logic logic) {
+        super(logic);
         this.secretCombinationView = new SecretCombinationView();
         this.console = new Console();
     }
@@ -22,18 +19,18 @@ class PlayView {
         ProposedCombination proposedCombination = new ProposedCombination();
         ProposedCombinationView proposedCombinationView = new ProposedCombinationView(proposedCombination);
         proposedCombinationView.read();
-        this.playController.addProposedCombination(proposedCombination);
+        this.logic.addProposedCombination(proposedCombination);
         this.console.writeln();
-        MessageView.ATTEMPTS.writeln(this.playController.getAttempts());
+        MessageView.ATTEMPTS.writeln(this.logic.getAttempts());
         this.secretCombinationView.writeln();
-        for (int i = 0; i < this.playController.getAttempts(); i++) {
-            new ProposedCombinationView(this.playController.getProposedCombination(i)).write();
-            new ResultView(this.playController.getResult(i)).writeln();
+        for (int i = 0; i < this.logic.getAttempts(); i++) {
+            new ProposedCombinationView(this.logic.getProposedCombination(i)).write();
+            new ResultView(this.logic.getResult(i)).writeln();
         }
-        if (this.playController.isWinner()) {
+        if (this.logic.isWinner()) {
             MessageView.WINNER.writeln();
             return true;
-        } else if (this.playController.isLooser()) {
+        } else if (this.logic.isLooser()) {
             MessageView.LOOSER.writeln();
             return true;
         }

@@ -1,7 +1,6 @@
 package usantatecla.mastermind.views.console;
 
-import usantatecla.mastermind.controllers.PlayController;
-import usantatecla.mastermind.controllers.ResumeController;
+import usantatecla.mastermind.controllers.Logic;
 
 public class View extends usantatecla.mastermind.views.View {
 
@@ -9,10 +8,12 @@ public class View extends usantatecla.mastermind.views.View {
     private final PlayView playView;
     private final ResumeView resumeView;
 
-    public View(PlayController playController, ResumeController resumeController) {
+    public View(Logic logic) {
+        assert logic != null;
+
         this.startView = new StartView();
-        this.playView = new PlayView(playController);
-        this.resumeView = new ResumeView(resumeController);
+        this.playView = new PlayView(logic);
+        this.resumeView = new ResumeView(logic);
     }
 
     @Override
