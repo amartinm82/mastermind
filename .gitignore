@@ -24,3 +24,10 @@ hs_err_pid*
 
 # IDE files
 .idea
+
+# target folder
+target
+
+# .m2 folder
+.m2
+

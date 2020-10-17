@@ -1,75 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 2.0.8">
-<meta name="author" content="Álvaro Martín Martín">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-</head>
-<body class="book">
-<div id="header">
-<h1>Master Mind</h1>
-<div class="details">
-<span id="author" class="author">Álvaro Martín Martín</span><br>
-<span id="email" class="email"><a href="mailto:amartinm82@gmail.com">amartinm82@gmail.com</a></span><br>
-<span id="revnumber">version 0.0.1</span>
-</div>
-<div id="mastermind" class="mastermind">
-<div id="mastermindtitle">Index</div>
-<ul class="sectlevel1">
-<li><a href="#mastermind-rules">Rules</a></li>
-<li><a href="#mastermind-model-domain">Domain Model</a></li>
-</ul>
-</div>
-</div>
-<div id="content">
-<div class="sect1">
-<h2 id="mastermind-rules">Rules</h2>
-<div class="sectionbody">
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="ulist">
-<ul>
-<li>
-<p><a href="https://en.wikipedia.org/wiki/Mastermind_(board_game)"><strong>Wiki</strong></a> - <a href="https://www.youtube.com/watch?v=2-hTeg2M6GQ"><strong>Youtube</strong></a></p>
-<div class="ulist">
-</div>
-</li>
-</ul>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="imageblock">
-<div class="content">
-<img src="docs/images/300px-Mastermind.jpg" alt="Mastermind picture">
-</div>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sect1">
-<h2 id="mastermind-model-domain">Model domain</h2>
-<div class="sectionbody">
-<div class="imageblock">
-<div class="content">
-<img src="docs/images/domainModel.png" alt="domainModel" width="283" height="303">
-</div>
-</div>
-</div>
-</div>
-</div>
-<div id="footer">
-<div id="footer-text">
-Version 0.0.1<br>
-Last updated 2020-10-10 11:10:00 +0000
-</div>
-</div>
-</html>
+<h1 align="center">Welcome to Master Mind. Solución 2.1. **documentView** 👋</h1>
+<p>
+  <a href="/docs" target="_blank">
+    <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" />
+  </a>
+  <a href="#" target="_blank">
+    <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" />
+  </a>
+</p>
+
+> Master Mind. Solución Modelo de Dominio
+
+## Install
+
+```sh
+mvn install
+```
+
+## Usage
+
+```sh
+mvn package
+java -jar target/mastermind-1.0-SNAPSHOT.jar
+```
+
+## Run tests
+
+```sh
+mvn test
+```
+
+## Author
+
+👤 **USantaTecla**
+
+* Github: [@USantaTecla](https://github.com/USantaTecla)
+
+
+Note that you should have to [install JDK 8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) and [Maven](https://maven.apache.org/install.html) as prerequisite.
