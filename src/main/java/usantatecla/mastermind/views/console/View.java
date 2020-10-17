@@ -1,18 +1,18 @@
 package usantatecla.mastermind.views.console;
 
-import usantatecla.mastermind.models.Game;
+import usantatecla.mastermind.controllers.PlayController;
+import usantatecla.mastermind.controllers.ResumeController;
 
 public class View extends usantatecla.mastermind.views.View {
 
-    private StartView startView;
-    private PlayView playView;
-    private ResumeView resumeView;
+    private final StartView startView;
+    private final PlayView playView;
+    private final ResumeView resumeView;
 
-    public View(Game game) {
-        super(game);
-        this.startView = new StartView(this.game);
-        this.playView = new PlayView(this.game);
-        this.resumeView = new ResumeView(this.game);
+    public View(PlayController playController, ResumeController resumeController) {
+        this.startView = new StartView();
+        this.playView = new PlayView(playController);
+        this.resumeView = new ResumeView(resumeController);
     }
 
     @Override
@@ -29,6 +29,5 @@ public class View extends usantatecla.mastermind.views.View {
     protected boolean isNewGame() {
         return this.resumeView.interact();
     }
-
 
 }

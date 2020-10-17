@@ -10,7 +10,7 @@ class ErrorView extends WithConsoleView {
 			"Wrong colors, they must be: " + ColorView.allInitials(), 
 			"Wrong proposed combination length" };
 
-	private Error error;
+	private final Error error;
 
 	ErrorView(Error error) {
 		this.error = error;

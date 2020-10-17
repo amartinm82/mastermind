@@ -1,16 +1,19 @@
 package usantatecla.mastermind.views.console;
 
-import usantatecla.mastermind.models.Game;
+import usantatecla.mastermind.controllers.PlayController;
 import usantatecla.mastermind.models.ProposedCombination;
 import usantatecla.utils.Console;
 
-class PlayView extends SubView {
+class PlayView {
 
-    private SecretCombinationView secretCombinationView;
-    protected Console console;
+    private final PlayController playController;
+    private final SecretCombinationView secretCombinationView;
+    private final Console console;
 
-    PlayView(Game game) {
-        super(game);
+    PlayView(PlayController playController) {
+        assert playController != null;
+
+        this.playController = playController;
         this.secretCombinationView = new SecretCombinationView();
         this.console = new Console();
     }
@@ -19,18 +22,18 @@ class PlayView extends SubView {
         ProposedCombination proposedCombination = new ProposedCombination();
         ProposedCombinationView proposedCombinationView = new ProposedCombinationView(proposedCombination);
         proposedCombinationView.read();
-        this.game.addProposedCombination(proposedCombination);
+        this.playController.addProposedCombination(proposedCombination);
         this.console.writeln();
-        MessageView.ATTEMPTS.writeln(this.game.getAttempts());
+        MessageView.ATTEMPTS.writeln(this.playController.getAttempts());
         this.secretCombinationView.writeln();
-        for (int i = 0; i < this.game.getAttempts(); i++) {
-            new ProposedCombinationView(this.game.getProposedCombination(i)).write();
-            new ResultView(this.game.getResult(i)).writeln();
+        for (int i = 0; i < this.playController.getAttempts(); i++) {
+            new ProposedCombinationView(this.playController.getProposedCombination(i)).write();
+            new ResultView(this.playController.getResult(i)).writeln();
         }
-        if (this.game.isWinner()) {
+        if (this.playController.isWinner()) {
             MessageView.WINNER.writeln();
             return true;
-        } else if (this.game.isLooser()) {
+        } else if (this.playController.isLooser()) {
             MessageView.LOOSER.writeln();
             return true;
         }

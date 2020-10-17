@@ -1,36 +1,24 @@
 package usantatecla.mastermind.views.graphics;
 
-import usantatecla.mastermind.models.Game;
+import usantatecla.mastermind.controllers.PlayController;
+import usantatecla.mastermind.controllers.ResumeController;
 
 public class View extends usantatecla.mastermind.views.View {
 
-    private PlayView playView;
-    private StartView startView;
-
-    public View(Game game) {
-        super(game);
-        this.startView = new StartView(this.game);
-        this.playView = new PlayView(this.game);
+    public View(PlayController playController, ResumeController resumeController) {
     }
 
     @Override
     protected void start() {
-        this.startView.interact();
     }
 
     @Override
     protected boolean play() {
-        this.startView.setVisible(false);
-        return this.playView.interact();
+        return true;
     }
 
     @Override
     protected boolean isNewGame() {
-        if (new ResumeView().isResumedGame()) {
-            return true;
-        }
-        this.playView.setVisible(false);
-        System.exit(0);
         return false;
     }
 

@@ -7,14 +7,14 @@ class ColorView extends WithConsoleView {
 
     private static final char[] INITIALS = {'r', 'b', 'y', 'g', 'o', 'p'};
 
-    private Color color;
+    private final Color color;
 
     ColorView(Color color) {
         this.color = color;
     }
 
     static String allInitials() {
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         for (char character : ColorView.INITIALS) {
             result.append(character);
         }

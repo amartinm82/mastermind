@@ -5,7 +5,7 @@ import java.io.InputStreamReader;
 
 public class Console {
 
-	private BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+	private final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
 	
 	public String readString(String title) {
 		String input = null;

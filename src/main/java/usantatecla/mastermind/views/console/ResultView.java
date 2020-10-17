@@ -5,7 +5,7 @@ import usantatecla.utils.WithConsoleView;
 
 class ResultView extends WithConsoleView {
 	
-	private Result result;
+	private final Result result;
 
 	ResultView(Result result) {
 		this.result = result;

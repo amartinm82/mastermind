@@ -2,9 +2,9 @@ package usantatecla.mastermind.models;
 
 public class Result {
 
-	private int blacks;
+	private final int blacks;
 
-	private int whites;
+	private final int whites;
 
 	Result(int blacks, int whites) {
 		assert blacks >= 0;

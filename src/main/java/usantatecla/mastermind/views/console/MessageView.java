@@ -12,9 +12,9 @@ enum MessageView {
     WINNER("You've won!!! ;-)"),
     LOOSER("You've lost!!! :-(");
 
-    private String message;
+    private final String message;
 
-    private Console console = new Console();
+    private final Console console = new Console();
 
     MessageView(String message) {
         this.message = message;
