@@ -5,7 +5,7 @@ import usantatecla.mastermind.models.ProposedCombination;
 import usantatecla.mastermind.models.Result;
 import usantatecla.mastermind.models.State;
 
-public class PlayController extends Controller {
+public class PlayController extends UseCaseController {
 
     public PlayController(Game game, State state) {
         super(game, state);
@@ -41,5 +41,10 @@ public class PlayController extends Controller {
             this.next();
         }
         return isLooser;
+    }
+
+    @Override
+    public void accept(ControllerVisitor controllerVisitor) {
+        controllerVisitor.visit(this);
     }
 }

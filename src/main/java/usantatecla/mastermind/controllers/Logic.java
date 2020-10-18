@@ -10,7 +10,7 @@ import java.util.Map;
 public class Logic {
 
     private final State state;
-    private final Map<StateValue, Controller> controllers;
+    private final Map<StateValue, UseCaseController> controllers;
 
     public Logic() {
         Game game = new Game();
@@ -22,7 +22,7 @@ public class Logic {
         this.controllers.put(StateValue.EXIT, null);
     }
 
-    public Controller getController() {
+    public UseCaseController getController() {
         return this.controllers.get(this.state.getValueState());
     }
 }
