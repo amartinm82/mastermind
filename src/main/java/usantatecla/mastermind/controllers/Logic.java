@@ -1,45 +1,28 @@
 package usantatecla.mastermind.controllers;
 
 import usantatecla.mastermind.models.Game;
-import usantatecla.mastermind.models.ProposedCombination;
-import usantatecla.mastermind.models.Result;
+import usantatecla.mastermind.models.State;
+import usantatecla.mastermind.models.StateValue;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Logic {
 
-    private PlayController playController;
-    private ResumeController resumeController;
+    private final State state;
+    private final Map<StateValue, Controller> controllers;
 
     public Logic() {
         Game game = new Game();
-        this.playController = new PlayController(game);
-        this.resumeController = new ResumeController(game);
+        this.state = new State();
+        this.controllers = new HashMap<>();
+        this.controllers.put(StateValue.INITIAL, new StartController(game, this.state));
+        this.controllers.put(StateValue.IN_GAME, new PlayController(game, this.state));
+        this.controllers.put(StateValue.RESUME, new ResumeController(game, this.state));
+        this.controllers.put(StateValue.EXIT, null);
     }
 
-    public void addProposedCombination(ProposedCombination proposedCombination) {
-        this.playController.addProposedCombination(proposedCombination);
-    }
-
-    public int getAttempts() {
-        return this.playController.getAttempts();
-    }
-
-    public ProposedCombination getProposedCombination(int position) {
-        return this.playController.getProposedCombination(position);
-    }
-
-    public Result getResult(int position) {
-        return this.playController.getResult(position);
-    }
-
-    public boolean isWinner() {
-        return this.playController.isWinner();
-    }
-
-    public boolean isLooser() {
-        return this.playController.isLooser();
-    }
-
-    public void resume() {
-        this.resumeController.resume();
+    public Controller getController() {
+        return this.controllers.get(this.state.getValueState());
     }
 }

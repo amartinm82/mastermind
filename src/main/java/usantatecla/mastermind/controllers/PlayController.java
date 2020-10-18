@@ -3,11 +3,12 @@ package usantatecla.mastermind.controllers;
 import usantatecla.mastermind.models.Game;
 import usantatecla.mastermind.models.ProposedCombination;
 import usantatecla.mastermind.models.Result;
+import usantatecla.mastermind.models.State;
 
 public class PlayController extends Controller {
 
-    public PlayController(Game game) {
-        super(game);
+    public PlayController(Game game, State state) {
+        super(game, state);
     }
 
     public void addProposedCombination(ProposedCombination proposedCombination) {
@@ -27,10 +28,18 @@ public class PlayController extends Controller {
     }
 
     public boolean isWinner() {
-        return this.game.isWinner();
+        boolean isWinner = this.game.isWinner();
+        if (isWinner) {
+            this.next();
+        }
+        return isWinner;
     }
 
     public boolean isLooser() {
-        return this.game.isLooser();
+        boolean isLooser = this.game.isLooser();
+        if (isLooser) {
+            this.next();
+        }
+        return isLooser;
     }
 }

@@ -1,40 +1,35 @@
 package usantatecla.mastermind.views.console;
 
-import usantatecla.mastermind.controllers.Logic;
+import usantatecla.mastermind.controllers.PlayController;
 import usantatecla.mastermind.models.ProposedCombination;
-import usantatecla.utils.Console;
+import usantatecla.utils.WithConsoleView;
 
-class PlayView extends SubView {
+class PlayView extends WithConsoleView {
 
     private final SecretCombinationView secretCombinationView;
-    private final Console console;
 
-    PlayView(Logic logic) {
-        super(logic);
+    PlayView() {
+        super();
         this.secretCombinationView = new SecretCombinationView();
-        this.console = new Console();
     }
 
-    boolean interact() {
+    void interact(PlayController playController) {
         ProposedCombination proposedCombination = new ProposedCombination();
         ProposedCombinationView proposedCombinationView = new ProposedCombinationView(proposedCombination);
         proposedCombinationView.read();
-        this.logic.addProposedCombination(proposedCombination);
+        playController.addProposedCombination(proposedCombination);
         this.console.writeln();
-        MessageView.ATTEMPTS.writeln(this.logic.getAttempts());
+        MessageView.ATTEMPTS.writeln(playController.getAttempts());
         this.secretCombinationView.writeln();
-        for (int i = 0; i < this.logic.getAttempts(); i++) {
-            new ProposedCombinationView(this.logic.getProposedCombination(i)).write();
-            new ResultView(this.logic.getResult(i)).writeln();
+        for (int i = 0; i < playController.getAttempts(); i++) {
+            new ProposedCombinationView(playController.getProposedCombination(i)).write();
+            new ResultView(playController.getResult(i)).writeln();
         }
-        if (this.logic.isWinner()) {
+        if (playController.isWinner()) {
             MessageView.WINNER.writeln();
-            return true;
-        } else if (this.logic.isLooser()) {
+        } else if (playController.isLooser()) {
             MessageView.LOOSER.writeln();
-            return true;
         }
-        return false;
     }
 
 }

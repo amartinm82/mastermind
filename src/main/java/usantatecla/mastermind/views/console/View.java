@@ -1,6 +1,9 @@
 package usantatecla.mastermind.views.console;
 
-import usantatecla.mastermind.controllers.Logic;
+import usantatecla.mastermind.controllers.Controller;
+import usantatecla.mastermind.controllers.PlayController;
+import usantatecla.mastermind.controllers.ResumeController;
+import usantatecla.mastermind.controllers.StartController;
 
 public class View extends usantatecla.mastermind.views.View {
 
@@ -8,27 +11,23 @@ public class View extends usantatecla.mastermind.views.View {
     private final PlayView playView;
     private final ResumeView resumeView;
 
-    public View(Logic logic) {
-        assert logic != null;
-
+    public View() {
         this.startView = new StartView();
-        this.playView = new PlayView(logic);
-        this.resumeView = new ResumeView(logic);
+        this.playView = new PlayView();
+        this.resumeView = new ResumeView();
     }
 
     @Override
-    protected void start() {
-        this.startView.interact();
-    }
-
-    @Override
-    protected boolean play() {
-        return this.playView.interact();
-    }
-
-    @Override
-    protected boolean isNewGame() {
-        return this.resumeView.interact();
+    public void interact(Controller controller) {
+        if (controller instanceof StartController) {
+            this.startView.interact((StartController) controller);
+        } else {
+            if (controller instanceof PlayController) {
+                this.playView.interact((PlayController) controller);
+            } else {
+                this.resumeView.interact((ResumeController) controller);
+            }
+        }
     }
 
 }
