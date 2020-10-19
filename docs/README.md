@@ -79,7 +79,7 @@
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="imageblock">
 <div class="content">
-<img src="build/docs/asciidoc/images/Dibujo.jpg" alt="Dibujo">
+<img src="images/Dibujo.jpg" alt="Dibujo">
 </div>
 </div></div></td>
 </tr>
@@ -101,7 +101,7 @@
 <h3 id="arquitectura">Arquitectura</h3>
 <div class="imageblock">
 <div class="content">
-<img src="build/docs/asciidoc/images/version2Arquitectura.svg" alt="version2Arquitectura" width="754" height="531">
+<img src="images/version2Arquitectura.svg" alt="version2Arquitectura" width="754" height="531">
 </div>
 </div>
 </div>
@@ -109,7 +109,7 @@
 <h3 id="paquete-mastermind">Paquete <em>mastermind</em></h3>
 <div class="imageblock">
 <div class="content">
-<img src="build/docs/asciidoc/images/version2Mastermind.svg" alt="version2Mastermind" width="929" height="456">
+<img src="images/version2Mastermind.svg" alt="version2Mastermind" width="998" height="456">
 </div>
 </div>
 </div>
@@ -117,7 +117,7 @@
 <h3 id="paquete-mastermind-views">Paquete <em>mastermind.views</em></h3>
 <div class="imageblock">
 <div class="content">
-<img src="build/docs/asciidoc/images/mastermindViews.svg" alt="mastermindViews" width="2599" height="1101">
+<img src="images/mastermindViews.svg" alt="mastermindViews" width="2777" height="940">
 </div>
 </div>
 </div>
@@ -125,7 +125,7 @@
 <h3 id="paquete-mastermind-models">Paquete <em>mastermind.models</em></h3>
 <div class="imageblock">
 <div class="content">
-<img src="build/docs/asciidoc/images/paqueteMastermindModel.svg" alt="paqueteMastermindModel" width="1147" height="843">
+<img src="images/paqueteMastermindModel.svg" alt="paqueteMastermindModel" width="974" height="1148">
 </div>
 </div>
 </div>
@@ -133,7 +133,7 @@
 <h3 id="paquete-mastermind-controllers">Paquete <em>mastermind.controllers</em></h3>
 <div class="imageblock">
 <div class="content">
-<img src="build/docs/asciidoc/images/paqueteMastermindController.svg" alt="paqueteMastermindController" width="1514" height="837">
+<img src="images/paqueteMastermindController.svg" alt="paqueteMastermindController" width="1861" height="756">
 </div>
 </div>
 </div>
@@ -141,7 +141,7 @@
 <h3 id="paquete-mastermind-utils">Paquete <em>mastermind.utils</em></h3>
 <div class="imageblock">
 <div class="content">
-<img src="build/docs/asciidoc/images/mastermindUtils2.svg" alt="mastermindUtils2" width="529" height="397">
+<img src="images/mastermindUtils2.svg" alt="mastermindUtils2" width="529" height="397">
 </div>
 </div>
 </div>
@@ -206,7 +206,7 @@
 <div class="sectionbody">
 <div class="imageblock">
 <div class="content">
-<img src="build/docs/asciidoc/images/diagramaImplementacion.svg" alt="diagramaImplementacion" width="1157" height="254">
+<img src="images/diagramaImplementacion.svg" alt="diagramaImplementacion" width="1157" height="254">
 </div>
 </div>
 </div>
@@ -216,7 +216,7 @@
 <div class="sectionbody">
 <div class="imageblock">
 <div class="content">
-<img src="build/docs/asciidoc/images/diagramaDespliegue.svg" alt="diagramaDespliegue" width="220" height="202">
+<img src="images/diagramaDespliegue.svg" alt="diagramaDespliegue" width="220" height="202">
 </div>
 </div>
 </div>
@@ -237,7 +237,7 @@
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1<br>
-Last updated 2020-10-18 21:41:07 +0200
+Last updated 2020-10-19 11:15:20 +0200
 </div>
 </div>
 </html>
