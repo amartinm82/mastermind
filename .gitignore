@@ -31,3 +31,7 @@ target
 # .m2 folder
 .m2
 
+# gradle generated files
+docs/.gradle
+docs/build/tmp
+

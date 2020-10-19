@@ -1,4 +1,4 @@
-<h1 align="center">Welcome to Master Mind. Solución 2.1. **documentView** 👋</h1>
+<h1 align="center">Welcome to Master Mind. Solución 8.2. **mvp.pm.withDoubleDispatching** 👋</h1>
 <p>
   <a href="/docs" target="_blank">
     <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" />
@@ -31,9 +31,9 @@ mvn test
 
 ## Author
 
-👤 **USantaTecla**
+👤 **Álvaro Martín Martín**
 
-* Github: [@USantaTecla](https://github.com/USantaTecla)
+* Github: [@amartinm82](https://github.com/amartinm82)
 
 
 Note that you should have to [install JDK 8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html) and [Maven](https://maven.apache.org/install.html) as prerequisite.

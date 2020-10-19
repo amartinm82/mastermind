@@ -1,5 +1,5 @@
-= Master Mind. Solucion 2.1. *documentView*
-Santa Tecla <parqueNaturalSantaTecla@gmail.com>
+= Master Mind. Solución 8.2. *mvp.pm.withDoubleDispatching*
+Álvaro Martín Martín <amartinm82@gmail.com>
 :toc-title: Índice
 :toc: left
 
@@ -36,8 +36,12 @@ image::Dibujo.jpg[]
 ....
 
 package mastermind #DDDDDD { } 
-mastermind .down.> mastermind.views
+mastermind .down.> mastermind.controllers
 mastermind .down.> mastermind.models
+mastermind .down.> mastermind.views
+
+package mastermind.controllers #DDDDDD { }
+mastermind.controllers .down.> mastermind.models
 
 package mastermind.models #DDDDDD { } 
 package java.util{ }
@@ -47,9 +51,12 @@ package mastermind.utils #DDDDDD { }
 package java.io{ }
 mastermind.utils .down.> java.io
 
-package mastermind.views #DDDDDD { } 
-mastermind.views .down.> mastermind.models
-mastermind.views .down.> mastermind.utils
+package mastermind.views #DDDDDD {
+    package mastermind.views.console {}
+    package mastermind.views.graphics {}
+}
+mastermind.views .down.> mastermind.controllers
+mastermind.views.console .down.> mastermind.utils
 
 ....
 
@@ -59,16 +66,31 @@ mastermind.views .down.> mastermind.utils
 
 ....
 
-class  mastermind.Mastermind{
-- game: Game
-- view: View
-- Mastermind()
-+ {static} main(String[]): void
-- play(): void
+abstract class  mastermind.Mastermind{
+- final logic: Logic
+- final view: View
+# Mastermind()
+# {abstract} createView(): View
+# play(): void
 }
-mastermind.Mastermind *-down-> mastermind.views.View
-mastermind.Mastermind *-down-> mastermind.models.Game
 
+class mastermind.ConsoleMastermind extends mastermind.Mastermind{
+# createView(): View
++ {static} main(String[] args): void
+}
+
+class mastermind.GraphicsMastermind extends mastermind.Mastermind{
+# createView(): View
++ {static} main(String[] args): void
+}
+
+mastermind.Mastermind *-down-> mastermind.controllers.Logic
+mastermind.Mastermind *-down-> mastermind.views.View
+mastermind.Mastermind .down.> mastermind.controllers.UseCaseController
+
+mastermind.GraphicsMastermind .down.> mastermind.views.graphics.View
+
+mastermind.ConsoleMastermind .down.> mastermind.views.console.View
 ....
 
 === Paquete _mastermind.views_ 
@@ -78,114 +100,134 @@ mastermind.Mastermind *-down-> mastermind.models.Game
 ....
 
 
-class  mastermind.views.Color{
-+ {static} RED: Color
-+ {static} BLUE: Color
-+ {static} YELLOW: Color
-+ {static} GREEN: Color
-+ {static} ORANGE: Color
-+ {static} PURPLE: Color
-- initial: char
-- Color(char)
-+ {static} valueOf(String): Color
-~ {static} getInstance(char): Color
-~ {static} getInstance(int): Color
-~ {static} allInitials(): String
-~ getInitial(): char
+abstract class mastermind.views.View {
++ {abstract} interact(UseCaseController controller): void
 }
 
-class  mastermind.views.Error{
-+ {static} DUPLICATED: Error
-+ {static} WRONG_CHARACTERS: Error
-+ {static} WRONG_LENGTH: Error
-- message: String
-- Error(String)
-+ {static} valueOf(String): Error
-~ getMessage(): String
-}
-mastermind.views.Error ..> mastermind.views.Color
+mastermind.views.View -down-> mastermind.controllers.UseCaseController
 
-class  mastermind.views.Message{
-+ {static} TURN: Message
-+ {static} SECRET: Message
-+ {static} RESUME: Message
-+ {static} RESULT: Message
-+ {static} PROPOSED_COMBINATION: Message
-+ {static} TITLE: Message
-+ {static} WINNER: Message
-+ {static} LOOSER: Message
-- message: String
-- Message(String)
-+ {static} valueOf(String): Message
-~ getMessage(): String
+class mastermind.views.graphics.View extends mastermind.views.View {
++ interact(UseCaseController controller): void
 }
 
-class  mastermind.views.ProposalView{
-~ ProposalView()
-- proposeCombination(int[], Game): int
-~ interact(Game): boolean
+mastermind.views.graphics.View .down.> mastermind.controllers.UseCaseController
+
+class mastermind.views.console.View extends mastermind.views.View implements mastermind.controllers.ControllerVisitor{
+- final startView: StartView
+- final playView: PlayView
+- final resumeView: ResumeView
+
++ View()
++ interact(UseCaseController controller): void
++ visit(StartController startController): void
++ visit(PlayController playController): void
++ visit(ResumeController resumeController): void
 }
-mastermind.utils.WithConsoleView <|-down- mastermind.views.ProposalView
-mastermind.views.ProposalView ..> mastermind.models.Game
-mastermind.views.ProposalView ..> mastermind.views.Message
-mastermind.views.ProposalView ..> mastermind.views.Error
-mastermind.views.ProposalView ..> mastermind.views.SecretCombinationView
-mastermind.views.ProposalView ..> mastermind.views.ProposedCombinationView
-mastermind.views.ProposalView ..> mastermind.views.ResultView
 
-class  mastermind.views.ProposedCombinationView{
-- {static} ERROR_CODE: int
-~ ProposedCombinationView()
-~ write(int[]): void
-~ read(): int[]
+mastermind.views.console.View *-down-> mastermind.views.console.StartView
+mastermind.views.console.View *-down-> mastermind.views.console.PlayView
+mastermind.views.console.View *-down-> mastermind.views.console.ResumeView
+mastermind.views.console.View .down.> mastermind.controllers.UseCaseController
+
+class mastermind.views.console.StartView {
+# interact(StartController startController): void
 }
-mastermind.utils.WithConsoleView <|-down- mastermind.views.ProposedCombinationView
-mastermind.views.ProposedCombinationView..> mastermind.views.Message
-mastermind.views.ProposedCombinationView..> mastermind.views.Color
 
+mastermind.views.console.StartView .down.> mastermind.controllers.StartController
+mastermind.views.console.StartView .down.> mastermind.views.console.MessageView
 
-class  mastermind.views.ResultView{
-~ ResultView()
-~ writeln(int[]): void
+class mastermind.views.console.SecretCombinationView extends utils.WithConsoleView.WithConsoleView {
+SecretCombinationView()
+writeln(): void
 }
-mastermind.utils.WithConsoleView <|-down- mastermind.views.ResultView
-mastermind.views.ResultView..> mastermind.views.Message
 
-class  mastermind.views.ResumeView{
-~ ResumeView()
-~ interact(Game): boolean
+mastermind.views.console.SecretCombinationView .down.> mastermind.models.SecretCombination
+mastermind.views.console.SecretCombinationView .down.> mastermind.views.console.MessageView
+
+class mastermind.views.console.ResumeView {
+interact(ResumeController resumeController): void
 }
-mastermind.views.ResumeView ..> mastermind.models.Game
-mastermind.views.ResumeView..> mastermind.views.Message
 
-class  mastermind.views.SecretCombinationView{
-~ SecretCombinationView()
-~ writeln(int): void
+mastermind.views.console.ResumeView .down.> mastermind.controllers.ResumeController
+mastermind.views.console.ResumeView .down.> utils.YesNoDialog
+mastermind.views.console.ResumeView .down.> mastermind.views.console.MessageView
+
+class mastermind.views.console.ResultView extends utils.WithConsoleView {
+- final result: Result
+ResultView(Result result)
+writeln(): void
 }
-mastermind.utils.WithConsoleView <|-down- mastermind.views.SecretCombinationView
-mastermind.views.SecretCombinationView..> mastermind.views.Message
 
-class  mastermind.views.StartView{
-~ StartView()
-~ interact(Game): void
+mastermind.views.console.ResultView *-down-> mastermind.models.Result
+mastermind.views.console.ResultView .down.> mastermind.views.console.MessageView
+
+class mastermind.views.console.ProposedCombinationView extends utils.WithConsoleView {
+- final proposedCombination: ProposedCombination
+ProposedCombinationView(ProposedCombination proposedCombination)
+write(): void
+read(): void
 }
-mastermind.utils.WithConsoleView <|-down- mastermind.views.StartView
-mastermind.views.StartView ..> mastermind.models.Game
-mastermind.views.StartView..> mastermind.views.Message
 
-class  mastermind.views.View{
-# game: Game
-- startView: StartView
-- proposalView: ProposalView
-- resumeView: ResumeView
-+ View(Game)
-+ interact(): void
+mastermind.views.console.ProposedCombinationView *-down-> mastermind.models.ProposedCombination
+mastermind.views.console.ProposedCombinationView .down.> mastermind.models.Color
+mastermind.views.console.ProposedCombinationView .down.> mastermind.views.console.ColorView
+mastermind.views.console.ProposedCombinationView .down.> mastermind.models.Error
+mastermind.views.console.ProposedCombinationView .down.> mastermind.views.console.MessageView
+mastermind.views.console.ProposedCombinationView .down.> mastermind.views.console.ErrorView
+
+class mastermind.views.console.PlayView extends utils.WithConsoleView {
+- final secretCombinationView: SecretCombinationView
+PlayView()
+interact(PlayController playController): void
 }
-mastermind.views.View *-down-> mastermind.views.ProposalView
-mastermind.views.View *-down-> mastermind.views.StartView
-mastermind.views.View *-down-> mastermind.models.Game
-mastermind.views.View *-down-> mastermind.views.ResumeView
 
+mastermind.views.console.PlayView *-down-> mastermind.views.console.SecretCombinationView
+mastermind.views.console.PlayView .down.> mastermind.controllers.PlayController
+mastermind.views.console.PlayView .down.> mastermind.models.ProposedCombination
+mastermind.views.console.PlayView .down.> mastermind.views.console.ProposedCombinationView
+mastermind.views.console.PlayView .down.> mastermind.views.console.MessageView
+mastermind.views.console.PlayView .down.> mastermind.views.console.ResultView
+
+enum mastermind.views.console.MessageView{
++ {static} ATTEMPTS: MessageView
++ {static} RESUME: MessageView
++ {static} RESULT: MessageView
++ {static} PROPOSED_COMBINATION: MessageView
++ {static} TITLE: MessageView
++ {static} WINNER: MessageView
++ {static} LOOSER: MessageView
+
+- final message: String
+- final console: Console
+
+- MessageView(String message)
+write(): void
+writeln(): void
+writeln(int attempts): void
+writeln(int blacks, int whites): void
+}
+
+mastermind.views.console.MessageView *-down-> utils.Console
+
+class mastermind.views.console.ErrorView extends utils.WithConsoleView{
+- {static} final MESSAGES: String[]
+- final error: Error
+ErrorView(Error error)
+writeln(): void
+}
+
+mastermind.views.console.ErrorView *-down-> mastermind.models.Error
+
+class mastermind.views.console.ColorView extends utils.WithConsoleView {
+- {static} final INITIALS: char[]
+- final color: Color
+ColorView(Color color)
+{static} allInitials(): String
+{static} getInstance(char character): Color
+write(): void
+}
+
+mastermind.views.console.ColorView *-down-> mastermind.models.Color
 ....
 
 === Paquete _mastermind.models_ 
@@ -195,86 +237,162 @@ mastermind.views.View *-down-> mastermind.views.ResumeView
 
 ....
 
-class  mastermind.models.Color{
+enum mastermind.models.Color{
 + {static} RED: Color
 + {static} BLUE: Color
 + {static} YELLOW: Color
 + {static} GREEN: Color
 + {static} ORANGE: Color
 + {static} PURPLE: Color
-- Color()
-+ {static} valueOf(String): Color
-~ {static} length(): int
-~ {static} getInstance(int): Color
+{static} length(): int
 }
 
-class  mastermind.models.Combination{
+abstract class mastermind.models.Combination{
 - {static} WIDTH: int
 # colors: List<Color>
 # Combination()
 + {static} getWidth(): int
 }
-mastermind.models.Combination *-down-> java.util.List
 mastermind.models.Combination *-down-> mastermind.models.Color
 
-class  mastermind.models.Error{
+enum mastermind.models.Error{
 + {static} DUPLICATED: Error
 + {static} WRONG_CHARACTERS: Error
 + {static} WRONG_LENGTH: Error
-- Error()
-+ {static} valueOf(String): Error
 }
 
 class  mastermind.models.Game{
-+ {static} NO_ERROR: int
-- {static} MAX_LONG: int
+- {static} final MAX_LONG: int
 - secretCombination: SecretCombination
 - proposedCombinations: List<ProposedCombination>
 - results: List<Result>
-- turn: int
+- attempts: int
 + Game()
 + clear(): void
-+ proposeCombination(ProposedCombination): void
-+ getWidth(): int
++ addProposedCombination(ProposedCombination proposedCombination): void
 + isLooser(): boolean
-+ getTurn(): int
 + isWinner(): boolean
-+ getCodes(): int[][][]
++ getAttempts(): int
++ getProposedCombination(int position): ProposedCombination
++ getResult(int position): Result
 }
-mastermind.models.Game *-down-> java.util.List
 mastermind.models.Game *-down-> mastermind.models.SecretCombination
 mastermind.models.Game *-down-> mastermind.models.Result
-mastermind.models.Game --> mastermind.models.ProposedCombination
+mastermind.models.Game *-down-> mastermind.models.ProposedCombination
 
-class  mastermind.models.ProposedCombination{
-+ ProposedCombination()
-~ contains(Color): boolean
-~ contains(int, Color): boolean
-+ {static} getInstance(int[]): ProposedCombination
-+ {static} isValid(int[]): Error
-~ getCodes(): int[]
+class  mastermind.models.ProposedCombination extends mastermind.models.Combination {
+contains(Color color, int position): boolean
+contains(Color color): boolean
++ getColors(): List<Color>
 }
-mastermind.models.Combination <|-down- mastermind.models.ProposedCombination
-mastermind.models.ProposedCombination ..> mastermind.models.Error
 
-class  mastermind.models.Result{
+mastermind.models.ProposedCombination .down.> mastermind.models.Color
+
+class mastermind.models.Result{
 - blacks: int
 - whites: int
-~ Result(int, int)
-~ isWinner(): boolean
-~ getCodes(): int[]
+Result(int, int)
+isWinner(): boolean
++ getBlacks(): int
++ getWhites(): int
 }
 
-class  mastermind.models.SecretCombination{
-~ SecretCombination()
-~ getResult(ProposedCombination): Result
+mastermind.models.Result .down.> mastermind.models.Combination
+
+class  mastermind.models.SecretCombination extends mastermind.models.Combination{
+SecretCombination()
+getResult(ProposedCombination): Result
 }
-mastermind.models.Combination <|-down- mastermind.models.SecretCombination
-mastermind.models.SecretCombination ..> mastermind.models.Result
-mastermind.models.SecretCombination ..> mastermind.models.ProposedCombination
+
+mastermind.models.SecretCombination .down.> mastermind.models.Result
+mastermind.models.SecretCombination .down.> mastermind.models.ProposedCombination
+mastermind.models.SecretCombination .down.> mastermind.models.Color
+
+class mastermind.models.State {
+- stateValue: StateValue
++ State()
++ reset(): void
++ next(): void
++ getValueState():StateValue
+}
+
+mastermind.models.State *-down-> mastermind.models.StateValue
+
+enum mastermind.models.StateValue {
++ {static} INITIAL: StateValue
++ {static} IN_GAME: StateValue
++ {static} RESUME: StateValue
++ {static} EXIT: StateValue
+}
+....
+
+
+=== Paquete _mastermind.controllers_
+
+
+[plantuml,paqueteMastermindController,svg]
 
 ....
 
+interface mastermind.controllers.ControllerVisitor {
++ visit(StartController startController): void
++ visit(PlayController playController): void
++ visit(ResumeController resumeController): void
+}
+
+mastermind.controllers.ControllerVisitor .down.> mastermind.controllers.StartController
+mastermind.controllers.ControllerVisitor .down.> mastermind.controllers.PlayController
+mastermind.controllers.ControllerVisitor .down.> mastermind.controllers.ResumeController
+
+class mastermind.controllers.Logic {
+- final state: State
+- final controllers: Map<StateValue, UseCaseController>
++ Logic()
++ getController(): UseCaseController
+}
+
+mastermind.controllers.Logic *-down-> mastermind.models.State
+mastermind.controllers.Logic *-down-> mastermind.models.StateValue
+mastermind.controllers.Logic *-down-> mastermind.controllers.UseCaseController
+mastermind.controllers.Logic .down.> mastermind.models.Game
+
+abstract class mastermind.controllers.UseCaseController {
+# final game: Game
+# final state: State
+UseCaseController(Game game, State state)
++ next(): void
++ {abstract} accept(ControllerVisitor controllerVisitor): void
+}
+
+mastermind.controllers.UseCaseController *-down-> mastermind.models.Game
+mastermind.controllers.UseCaseController *-down-> mastermind.models.State
+mastermind.controllers.UseCaseController .down.> mastermind.controllers.ControllerVisitor
+
+class mastermind.controllers.PlayController extends mastermind.controllers.UseCaseController {
++ PlayController(Game game, State state)
++ addProposedCombination(ProposedCombination proposedCombination): void
++ getAttempts(): int
++ getProposedCombination(int position): ProposedCombination
++ getResult(int position): Result
++ isWinner(): boolean
++ isLooser(): boolean
++ accept(ControllerVisitor controllerVisitor): void
+}
+
+mastermind.controllers.PlayController .down.> mastermind.models.ProposedCombination
+mastermind.controllers.PlayController .down.> mastermind.models.Result
+
+class mastermind.controllers.ResumeController extends mastermind.controllers.UseCaseController {
++ ResumeController(Game game, State state)
++ resume(): void
++ accept(ControllerVisitor controllerVisitor): void
+}
+
+class mastermind.controllers.StartController extends mastermind.controllers.UseCaseController {
++StartController(Game game, State state)
++ accept(ControllerVisitor controllerVisitor): void
+}
+....
 
 === Paquete _mastermind.utils_
 
@@ -282,46 +400,35 @@ mastermind.models.SecretCombination ..> mastermind.models.ProposedCombination
 
 ....
 
-class  mastermind.utils.ClosedInterval{
-- min: int
-- max: int
-+ ClosedInterval(int, int)
-+ includes(int): boolean
-}
-
-class  mastermind.utils.Console{
-- bufferedReader: BufferedReader
-+ Console()
-+ write(char): void
-+ write(String): void
-+ readInt(String): int
-+ readChar(String): char
-- writeError(String): void
-+ writeln(String): void
-+ writeln(int): void
+class mastermind.utils.Console {
+- final bufferedReader: BufferedReader
++ readString(String title): String
++ readString(): String
++ readInt(String title): int
++ readChar(String title): char
 + writeln(): void
-+ readString(String): String
++ write(String string): void
++ writeln(String string): void
++ write(char character): void
+- writeError(String format): void
 }
-mastermind.utils.Console *-down-> java.io.BufferedReader
 
-class  mastermind.utils.WithConsoleView{
+abstract class mastermind.utils.WithConsoleView{
 # console: Console
 # WithConsoleView()
 }
 mastermind.utils.WithConsoleView *-down-> mastermind.utils.Console
 
-class  mastermind.utils.YesNoDialog{
+class  mastermind.utils.YesNoDialog extends mastermind.utils.WithConsoleView{
 - {static} AFIRMATIVE: char
 - {static} NEGATIVE: char
 - {static} QUESTION: String
 - {static} MESSAGE: String
-+ YesNoDialog()
 + read(String): boolean
++ read(): boolean
 - {static} isAfirmative(char): boolean
 - {static} isNegative(char): boolean
 }
-mastermind.utils.WithConsoleView <|-down- mastermind.utils.YesNoDialog
-
 ....
 
 == Calidad del Software
@@ -349,9 +456,15 @@ mastermind.utils.WithConsoleView <|-down- mastermind.utils.YesNoDialog
 
 package "  "  as mastermind {
 }
+package "  "  as mastermind.controllers {
+}
 package "  "  as mastermind.models {
 }
 package "  "  as mastermind.views {
+}
+package "  "  as mastermind.views.console {
+}
+package "  "  as mastermind.views.graphics {
 }
 package "  "  as mastermind.utils {
 }
@@ -363,8 +476,11 @@ package "  "  as java.util {
 [mastermind.jar] as jar
 
 jar *--> mastermind
+jar *--> mastermind.controllers
 jar *--> mastermind.models
 jar *--> mastermind.views
+mastermind.views *--> mastermind.views.console
+mastermind.views *--> mastermind.views.graphics
 jar *--> mastermind.utils
 jar *--> java.io
 jar *--> java.util
@@ -383,7 +499,7 @@ memory : xxx Mb
 cpu : xxx GHz
 ]
 
-[ masterming.jar ] as component
+[ mastermind.jar ] as component
 
 node *--> component
 ....
