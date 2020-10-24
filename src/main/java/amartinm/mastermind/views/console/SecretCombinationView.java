@@ -1,19 +1,19 @@
 package amartinm.mastermind.views.console;
 
 import amartinm.mastermind.models.SecretCombination;
-import amartinm.utils.WithConsoleView;
+import amartinm.utils.Console;
 
-class SecretCombinationView extends WithConsoleView {
+class SecretCombinationView {
 
-	SecretCombinationView() {
-		super();
-	}
+    SecretCombinationView() {
+        super();
+    }
 
-	void writeln() {
-		for (int i = 0; i < SecretCombination.getWidth(); i++) {
-			MessageView.SECRET.write();
-		}
-		this.console.writeln();
-	}
+    void writeln() {
+        for (int i = 0; i < SecretCombination.getWidth(); i++) {
+            MessageView.SECRET.write();
+        }
+        Console.instance().writeln();
+    }
 
 }

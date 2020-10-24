@@ -15,7 +15,7 @@ public class View extends amartinm.mastermind.views.View implements ControllerVi
     }
 
     @Override
-    public void interact(UseCaseController controller) {
+    public void interact(AcceptorController controller) {
         controller.accept(this);
     }
 
@@ -26,7 +26,8 @@ public class View extends amartinm.mastermind.views.View implements ControllerVi
 
     @Override
     public void visit(PlayController playController) {
-        this.playView.interact(playController);	}
+        this.playView.interact(playController);
+    }
 
     @Override
     public void visit(ResumeController resumeController) {

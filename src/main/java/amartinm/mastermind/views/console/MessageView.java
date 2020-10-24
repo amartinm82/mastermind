@@ -10,14 +10,21 @@ enum MessageView {
     PROPOSED_COMBINATION("Propose a combination: "),
     TITLE("----- MASTERMIND -----"),
     WINNER("You've won!!! ;-)"),
-    LOOSER("You've lost!!! :-(");
+    LOOSER("You've lost!!! :-("),
+    ACTION_COMMAND("Do an action"),
+    UNDO_COMMAND("Undo previous action"),
+    REDO_COMMAND("Redo previous action");
 
     private final String message;
 
-    private final Console console = new Console();
+    private final Console console = Console.instance();
 
     MessageView(String message) {
         this.message = message;
+    }
+
+    public String getMessage() {
+        return this.message;
     }
 
     void write() {

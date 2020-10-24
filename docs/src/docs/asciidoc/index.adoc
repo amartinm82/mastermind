@@ -1,4 +1,4 @@
-= Master Mind. Solución 8.2. *mvp.pm.withDoubleDispatching*
+= Master Mind. Solución 9.3. *mvp.pm.withComposite*
 Álvaro Martín Martín <amartinm82@gmail.com>
 :toc-title: Índice
 :toc: left
@@ -24,7 +24,6 @@ a|
 image::Dibujo.jpg[]
 
 |===
-
 
 == Vista de Lógica/Diseño
 
@@ -63,7 +62,6 @@ mastermind.views.console .down.> mastermind.utils
 === Paquete _mastermind_ 
 
 [plantuml,version2Mastermind,svg]
-
 ....
 
 abstract class  mastermind.Mastermind{
@@ -86,13 +84,13 @@ class mastermind.GraphicsMastermind extends mastermind.Mastermind{
 
 mastermind.Mastermind *-down-> mastermind.views.View
 mastermind.Mastermind *-down-> mastermind.controllers.Logic
-mastermind.Mastermind .down.> mastermind.controllers.UseCaseController
+mastermind.Mastermind .down.> mastermind.controllers.AcceptorController
 
 mastermind.GraphicsMastermind .down.> mastermind.views.graphics.View
 
 mastermind.ConsoleMastermind .down.> mastermind.views.console.View
 
-mastermind.views.View <|.down.> mastermind.controllers.ControllerVisitor
+mastermind.views.console.View <|.down.> mastermind.controllers.ControllerVisitor
 mastermind.views.View <|-down-> mastermind.views.console.View
 mastermind.views.View <|-down-> mastermind.views.graphics.View
 ....
@@ -100,7 +98,6 @@ mastermind.views.View <|-down-> mastermind.views.graphics.View
 === Paquete _mastermind.views_ 
 
 [plantuml,mastermindViews,svg]
-
 ....
 
 
@@ -108,14 +105,14 @@ abstract class mastermind.views.View {
 + {abstract} interact(UseCaseController controller): void
 }
 
-mastermind.views.View .up.> mastermind.controllers.UseCaseController
+mastermind.views.View .up.> mastermind.controllers.AcceptorController
 
 class mastermind.views.graphics.View {
 + interact(UseCaseController controller): void
 }
 
 mastermind.views.View <|-left- mastermind.views.graphics.View
-mastermind.views.graphics.View .left.> mastermind.controllers.UseCaseController
+mastermind.views.graphics.View .left.> mastermind.controllers.AcceptorController
 
 class mastermind.views.console.View{
 - final startView: StartView
@@ -128,12 +125,12 @@ class mastermind.views.console.View{
 + visit(PlayController playController): void
 + visit(ResumeController resumeController): void
 }
-mastermind.views.View <|-right- mastermind.views.console.View
+mastermind.views.View <|-up- mastermind.views.console.View
 mastermind.controllers.ControllerVisitor <|.up. mastermind.views.console.View
 mastermind.views.console.View *-down-> mastermind.views.console.StartView
 mastermind.views.console.View *-down-> mastermind.views.console.PlayView
 mastermind.views.console.View *-down-> mastermind.views.console.ResumeView
-mastermind.views.console.View .up.> mastermind.controllers.UseCaseController
+mastermind.views.console.View .up.> mastermind.controllers.AcceptorController
 
 enum mastermind.views.console.MessageView{
 + {static} ATTEMPTS: MessageView
@@ -143,16 +140,22 @@ enum mastermind.views.console.MessageView{
 + {static} TITLE: MessageView
 + {static} WINNER: MessageView
 + {static} LOOSER: MessageView
++ {static} ACTION_COMMAND
++ {static} UNDO_COMMAND
++ {static} REDO_COMMAND
 
 - final message: String
 - final console: Console
 
 - MessageView(String message)
++ getMessage(): String
 write(): void
 writeln(): void
 writeln(int attempts): void
 writeln(int blacks, int whites): void
 }
+
+mastermind.views.console.MessageView *-down-> utils.Console
 
 class mastermind.views.console.StartView {
 # interact(StartController startController): void
@@ -162,13 +165,14 @@ mastermind.views.console.StartView .down.> mastermind.controllers.StartControlle
 mastermind.views.console.StartView .up.> mastermind.views.console.MessageView
 mastermind.views.console.StartView .down.> mastermind.views.console.SecretCombinationView
 
-class mastermind.views.console.SecretCombinationView extends utils.WithConsoleView {
+class mastermind.views.console.SecretCombinationView {
 SecretCombinationView()
 writeln(): void
 }
 
 mastermind.views.console.SecretCombinationView .down.> mastermind.models.SecretCombination
 mastermind.views.console.SecretCombinationView .up.> mastermind.views.console.MessageView
+mastermind.views.console.SecretCombinationView .down.> utils.Console
 
 class mastermind.views.console.ResumeView {
 interact(ResumeController resumeController): void
@@ -178,7 +182,7 @@ mastermind.views.console.ResumeView .down.> mastermind.controllers.ResumeControl
 mastermind.views.console.ResumeView .down.> utils.YesNoDialog
 mastermind.views.console.ResumeView .up.> mastermind.views.console.MessageView
 
-class mastermind.views.console.ResultView extends utils.WithConsoleView {
+class mastermind.views.console.ResultView {
 - final result: Result
 ResultView(Result result)
 writeln(): void
@@ -187,7 +191,7 @@ writeln(): void
 mastermind.views.console.ResultView *-down-> mastermind.models.Result
 mastermind.views.console.ResultView .up.> mastermind.views.console.MessageView
 
-class mastermind.views.console.ProposedCombinationView extends utils.WithConsoleView {
+class mastermind.views.console.ProposedCombinationView {
 - final proposedCombination: ProposedCombination
 ProposedCombinationView(ProposedCombination proposedCombination)
 write(): void
@@ -200,23 +204,18 @@ mastermind.views.console.ProposedCombinationView .down.> mastermind.views.consol
 mastermind.views.console.ProposedCombinationView .down.> mastermind.models.Error
 mastermind.views.console.ProposedCombinationView .up.> mastermind.views.console.MessageView
 mastermind.views.console.ProposedCombinationView .down.> mastermind.views.console.ErrorView
+mastermind.views.console.ProposedCombinationView .down.> utils.Console
 
-class mastermind.views.console.PlayView extends utils.WithConsoleView {
-- final secretCombinationView: SecretCombinationView
+class mastermind.views.console.PlayView {
 PlayView()
 interact(PlayController playController): void
 }
 
-mastermind.views.console.PlayView *-down-> mastermind.views.console.SecretCombinationView
 mastermind.views.console.PlayView .down.> mastermind.controllers.PlayController
-mastermind.views.console.PlayView .down.> mastermind.models.ProposedCombination
-mastermind.views.console.PlayView .down.> mastermind.views.console.ProposedCombinationView
-mastermind.views.console.PlayView .up.> mastermind.views.console.MessageView
-mastermind.views.console.PlayView .down.> mastermind.views.console.ResultView
+mastermind.views.console.PlayView .down.> mastermind.views.console.PlayMenu
 
-mastermind.views.console.MessageView *-down-> utils.Console
 
-class mastermind.views.console.ErrorView extends utils.WithConsoleView{
+class mastermind.views.console.ErrorView {
 - {static} final MESSAGES: String[]
 - final error: Error
 ErrorView(Error error)
@@ -224,8 +223,9 @@ writeln(): void
 }
 
 mastermind.views.console.ErrorView *-down-> mastermind.models.Error
+mastermind.views.console.ErrorView .down.> utils.Console
 
-class mastermind.views.console.ColorView extends utils.WithConsoleView {
+class mastermind.views.console.ColorView {
 - {static} final INITIALS: char[]
 - final color: Color
 ColorView(Color color)
@@ -235,13 +235,76 @@ write(): void
 }
 
 mastermind.views.console.ColorView *-down-> mastermind.models.Color
+mastermind.views.console.ColorView .down.> utils.Console
+
+abstract class mastermind.views.console.Command extends utils.Command {
+# final playController: PlayController
+# Command(String title, PlayController playController)
+}
+
+mastermind.views.console.Command *-down-> mastermind.controllers.PlayController
+
+
+class mastermind.views.console.GameView {
+- final playController: PlayController
+- final secretCombinationView: SecretCombinationView
+
+GameView(PlayController playController)
++ write(): void
+}
+
+mastermind.views.console.GameView *-down-> mastermind.views.console.SecretCombinationView
+mastermind.views.console.GameView *-down-> mastermind.controllers.PlayController
+mastermind.views.console.GameView .down.> utils.Console
+mastermind.views.console.GameView .down.> mastermind.views.console.MessageView
+mastermind.views.console.GameView .down.> mastermind.views.console.ProposedCombinationView
+mastermind.views.console.GameView .down.> mastermind.views.console.ResultView
+
+class mastermind.views.console.PlayMenu extends utils.Menu {
+PlayMenu(PlayController playController)
+}
+
+mastermind.views.console.PlayMenu .down.> mastermind.controllers.PlayController
+mastermind.views.console.PlayMenu .down.> mastermind.views.console.ProposalCommand
+mastermind.views.console.PlayMenu .down.> mastermind.views.console.UndoCommand
+mastermind.views.console.PlayMenu .down.> mastermind.views.console.RedoCommand
+
+class mastermind.views.console.ProposalCommand extends mastermind.views.console.Command {
+ProposalCommand(PlayController playController)
+# execute(): void
+# isActive(): boolean
+}
+
+mastermind.views.console.ProposalCommand .down.> mastermind.controllers.PlayController
+mastermind.views.console.ProposalCommand .down.> mastermind.views.console.MessageView
+mastermind.views.console.ProposalCommand .down.> mastermind.models.ProposedCombination
+mastermind.views.console.ProposalCommand .down.> mastermind.views.console.ProposedCombinationView
+mastermind.views.console.ProposalCommand .down.> mastermind.views.console.GameView
+
+class mastermind.views.console.UndoCommand extends mastermind.views.console.Command {
+UndoCommand(PlayController playController)
+# execute(): void
+# isActive(): boolean
+}
+
+mastermind.views.console.UndoCommand .down.> mastermind.controllers.PlayController
+mastermind.views.console.UndoCommand .down.> mastermind.views.console.MessageView
+mastermind.views.console.UndoCommand .down.> mastermind.views.console.GameView
+
+class mastermind.views.console.RedoCommand extends mastermind.views.console.Command {
+RedoCommand(PlayController playController)
+# execute(): void
+# isActive(): boolean
+}
+
+mastermind.views.console.RedoCommand .down.> mastermind.controllers.PlayController
+mastermind.views.console.RedoCommand .down.> mastermind.views.console.MessageView
+mastermind.views.console.RedoCommand .down.> mastermind.views.console.GameView
 ....
 
 === Paquete _mastermind.models_ 
 
-
 [plantuml,paqueteMastermindModel,svg]
-
 ....
 
 enum mastermind.models.Color{
@@ -268,10 +331,13 @@ class  mastermind.models.Game{
 + getAttempts(): int
 + getProposedCombination(int position): ProposedCombination
 + getResult(int position): Result
++ createMemento(): GameMemento
++ set(GameMemento memento): void
 }
 mastermind.models.Game *-down-> mastermind.models.SecretCombination
 mastermind.models.Game *-down-> mastermind.models.Result
 mastermind.models.Game *-down-> mastermind.models.ProposedCombination
+mastermind.models.Game .down.> mastermind.models.GameMemento
 
 class  mastermind.models.ProposedCombination extends mastermind.models.Combination {
 contains(Color color, int position): boolean
@@ -331,14 +397,73 @@ enum mastermind.models.Error{
 + {static} WRONG_CHARACTERS: Error
 + {static} WRONG_LENGTH: Error
 }
-....
 
+class mastermind.models.GameMemento {
+
+- final proposedCombinations: List<ProposedCombination>
+- final results: List<Result>
+- final attempts: int
+
++ GameMemento(List<ProposedCombination> proposedCombinations, List<Result> results, int attempts)
++ getProposedCombinations(): List<ProposedCombination>
++ getResults(): List<Result>
++ getAttempts(): int
+}
+
+mastermind.models.GameMemento .down.> mastermind.models.ProposedCombination
+mastermind.models.GameMemento .down.> mastermind.models.Result
+
+class mastermind.models.GameRegistry {
+
+- mementoList: List<GameMemento>
+- final game: Game
+- firstPrevious: int
+
+GameRegistry(Game game)
+reset(): void
+registry(): void
+undo(): void
+redo(): void
+undoable(): boolean
+redoable(): boolean
+}
+
+mastermind.models.GameRegistry *-down-> mastermind.models.GameMemento
+mastermind.models.GameRegistry *-down-> mastermind.models.Game
+
+class mastermind.models.Session {
+
+- final state: State
+- final game: Game
+- final registry: GameRegistry
+
++ Session()
++ next(): void
++ getValueState(): StateValue
++ undoable(): boolean
++ redoable(): boolean
++ undo(): void
++ redo(): void
++ addProposedCombination(ProposedCombination proposedCombination): void
++ getAttempts(): int
++ getProposedCombination(int position): ProposedCombination
++ getResult(int position): Result
++ isWinner(): boolean
++ isLooser(): boolean
++ reset(): void
+}
+
+mastermind.models.Session *-down-> mastermind.models.State
+mastermind.models.Session *-down-> mastermind.models.Game
+mastermind.models.Session *-down-> mastermind.models.GameRegistry
+mastermind.models.Session .down.> mastermind.models.StateValue
+mastermind.models.Session .down.> mastermind.models.ProposedCombination
+mastermind.models.Session .down.> mastermind.models.Result
+....
 
 === Paquete _mastermind.controllers_
 
-
 [plantuml,paqueteMastermindController,svg]
-
 ....
 
 interface mastermind.controllers.ControllerVisitor {
@@ -352,37 +477,42 @@ mastermind.controllers.ControllerVisitor .down.> mastermind.controllers.PlayCont
 mastermind.controllers.ControllerVisitor .down.> mastermind.controllers.ResumeController
 
 class mastermind.controllers.Logic {
-- final state: State
-- final controllers: Map<StateValue, UseCaseController>
+- final session: Session
+- final controllers: Map<StateValue, AcceptorController>
 + Logic()
 + getController(): UseCaseController
 }
 
-mastermind.controllers.Logic *-up-> mastermind.models.State
+mastermind.controllers.Logic *-up-> mastermind.models.Session
 mastermind.controllers.Logic *-up-> mastermind.models.StateValue
-mastermind.controllers.Logic *-down-> mastermind.controllers.UseCaseController
-mastermind.controllers.Logic .down.> mastermind.models.Game
+mastermind.controllers.Logic *-down-> mastermind.controllers.AcceptorController
 
 abstract class mastermind.controllers.UseCaseController {
-# final game: Game
+# final session: Session
 # final state: State
-UseCaseController(Game game, State state)
+UseCaseController(Session session)
 + next(): void
-+ {abstract} accept(ControllerVisitor controllerVisitor): void
 }
 
-mastermind.controllers.UseCaseController *-up-> mastermind.models.Game
-mastermind.controllers.UseCaseController *-up-> mastermind.models.State
+mastermind.controllers.UseCaseController *-up-> mastermind.models.Session
 mastermind.controllers.UseCaseController .down.> mastermind.controllers.ControllerVisitor
 
-class mastermind.controllers.PlayController extends mastermind.controllers.UseCaseController {
-+ PlayController(Game game, State state)
+class mastermind.controllers.PlayController extends mastermind.controllers.UseCaseController implements mastermind.controllers.AcceptorController{
+- final proposalController: ProposalController
+- final undoController: UndoController
+- final redoController: RedoController
+
++ PlayController(Session)
 + addProposedCombination(ProposedCombination proposedCombination): void
 + getAttempts(): int
 + getProposedCombination(int position): ProposedCombination
 + getResult(int position): Result
 + isWinner(): boolean
 + isLooser(): boolean
++ undo(): void
++ undoable(): boolean
++ redo(): void
++ redoable(): boolean
 + accept(ControllerVisitor controllerVisitor): void
 }
 
@@ -390,29 +520,63 @@ mastermind.controllers.PlayController .up.> mastermind.controllers.ControllerVis
 mastermind.controllers.PlayController .down.> mastermind.models.ProposedCombination
 mastermind.controllers.PlayController .down.> mastermind.models.Result
 
-class mastermind.controllers.ResumeController extends mastermind.controllers.UseCaseController {
-+ ResumeController(Game game, State state)
-+ resume(): void
+class mastermind.controllers.ResumeController extends mastermind.controllers.UseCaseController implements mastermind.controllers.AcceptorController {
++ ResumeController(Session session)
++ resume(boolean isResumed): void
 + accept(ControllerVisitor controllerVisitor): void
 }
 
 mastermind.controllers.ResumeController .up.> mastermind.controllers.ControllerVisitor
 
-class mastermind.controllers.StartController extends mastermind.controllers.UseCaseController {
-+StartController(Game game, State state)
+class mastermind.controllers.StartController extends mastermind.controllers.UseCaseController implements mastermind.controllers.AcceptorController {
++StartController(Session session)
 + accept(ControllerVisitor controllerVisitor): void
 }
 
 mastermind.controllers.StartController .up.> mastermind.controllers.ControllerVisitor
+
+interface mastermind.controllers.AcceptorController {
++ accept(ControllerVisitor controllerVisitor): void
++ next(): void
+}
+
+mastermind.controllers.AcceptorController .down.> mastermind.controllers.ControllerVisitor
+
+class mastermind.controllers.ProposalController extends mastermind.controllers.UseCaseController {
++ ProposalController(Session session)
++ addProposedCombination(ProposedCombination proposedCombination): void
++ getAttempts(): int
++ getProposedCombination(int position): ProposedCombination
++ getResult(int position): Result
++ isWinner(): boolean
++ isLooser(): boolean
+}
+
+mastermind.controllers.ProposalController .down.> mastermind.models.ProposedCombination
+mastermind.controllers.ProposalController .down.> mastermind.models.Result
+
+class mastermind.controllers.RedoController extends mastermind.controllers.UseCaseController {
+RedoController(Session session)
++ redo(): void
++ redoable(): boolean
+}
+
+class mastermind.controllers.UndoController extends mastermind.controllers.UseCaseController {
+UndoController(Session session)
+undo(): void
+undoable(): boolean
+}
 ....
 
 === Paquete _mastermind.utils_
 
 [plantuml,mastermindUtils2,svg]
-
 ....
 
-class mastermind.utils.Console {
+class utils.Console {
++ {static} console: Console
+
++ {static} instance(): Console
 - final bufferedReader: BufferedReader
 + readString(String title): String
 + readString(): String
@@ -425,13 +589,7 @@ class mastermind.utils.Console {
 - writeError(String format): void
 }
 
-abstract class mastermind.utils.WithConsoleView{
-# console: Console
-# WithConsoleView()
-}
-mastermind.utils.WithConsoleView *-down-> mastermind.utils.Console
-
-class  mastermind.utils.YesNoDialog extends mastermind.utils.WithConsoleView{
+class  utils.YesNoDialog{
 - {static} AFIRMATIVE: char
 - {static} NEGATIVE: char
 - {static} QUESTION: String
@@ -440,6 +598,37 @@ class  mastermind.utils.YesNoDialog extends mastermind.utils.WithConsoleView{
 + read(): boolean
 - {static} isAfirmative(char): boolean
 - {static} isNegative(char): boolean
+}
+
+utils.YesNoDialog .down.> utils.Console
+
+abstract class utils.Menu {
+
+- {static} final OPTION: String
+- final commandList: List<Command>
+
++ Menu()
++ execute(): void
+# add(Command command): void
+}
+
+utils.Menu *-down-> utils.Command
+
+abstract class utils.Command {
+# final title: String
+# Command(String title)
+# {abstract} execute(): void
+# {abstract} isActive(): boolean
+getTitle():String
+}
+
+class utils.ClosedInterval {
+- final min: int
+- final max: int
+
++ ClosedInterval(int min, int max)
++ isIncluded(int value): boolean
++ toString(): String
 }
 ....
 
@@ -497,7 +686,6 @@ jar *--> mastermind.utils
 jar *--> java.io
 jar *--> java.util
 ....
-
 
 == Vista de Despliegue/Física
 

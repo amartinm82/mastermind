@@ -7,12 +7,8 @@ class ResumeView {
 
     void interact(ResumeController resumeController) {
         MessageView.RESUME.write();
-        boolean newGame = new YesNoDialog().read();
-        if (newGame) {
-            resumeController.resume();
-        } else {
-            resumeController.next();
-        }
+        boolean isResumed = new YesNoDialog().read();
+        resumeController.resume(isResumed);
     }
 
 }

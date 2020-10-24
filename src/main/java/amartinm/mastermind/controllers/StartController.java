@@ -1,12 +1,11 @@
 package amartinm.mastermind.controllers;
 
-import amartinm.mastermind.models.Game;
-import amartinm.mastermind.models.State;
+import amartinm.mastermind.models.Session;
 
-public class StartController extends UseCaseController {
+public class StartController extends UseCaseController implements AcceptorController {
 
-    public StartController(Game game, State state) {
-        super(game, state);
+    public StartController(Session session) {
+        super(session);
     }
 
     @Override

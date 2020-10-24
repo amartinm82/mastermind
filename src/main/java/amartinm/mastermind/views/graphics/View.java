@@ -1,11 +1,11 @@
 package amartinm.mastermind.views.graphics;
 
-import amartinm.mastermind.controllers.UseCaseController;
+import amartinm.mastermind.controllers.AcceptorController;
 
 public class View extends amartinm.mastermind.views.View {
 
     @Override
-    public void interact(UseCaseController controller) {
+    public void interact(AcceptorController controller) {
         controller.next();
     }
 

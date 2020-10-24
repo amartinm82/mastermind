@@ -1,9 +1,8 @@
 package amartinm.mastermind.views.console;
 
 import amartinm.mastermind.models.Result;
-import amartinm.utils.WithConsoleView;
 
-class ResultView extends WithConsoleView {
+class ResultView {
 	
 	private final Result result;
 

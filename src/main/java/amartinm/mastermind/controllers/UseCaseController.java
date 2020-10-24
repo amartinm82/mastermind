@@ -1,22 +1,16 @@
 package amartinm.mastermind.controllers;
 
-import amartinm.mastermind.models.Game;
-import amartinm.mastermind.models.State;
+import amartinm.mastermind.models.Session;
 
 public abstract class UseCaseController {
 
-    protected final Game game;
-    protected final State state;
+    protected final Session session;
 
-    UseCaseController(Game game, State state) {
-        this.game = game;
-        this.state = state;
+    UseCaseController(Session session) {
+        this.session = session;
     }
 
     public void next() {
-        this.state.next();
+        this.session.next();
     }
-
-    public abstract void accept(ControllerVisitor controllerVisitor);
-
 }

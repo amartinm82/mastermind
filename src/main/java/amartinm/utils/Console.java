@@ -6,7 +6,16 @@ import java.io.InputStreamReader;
 public class Console {
 
 	private final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-	
+
+	public static Console console;
+
+	public static Console instance() {
+		if (Console.console == null) {
+			Console.console = new Console();
+		}
+		return Console.console;
+	}
+
 	public String readString(String title) {
 		String input = null;
 		boolean ok = false;
@@ -74,4 +83,5 @@ public class Console {
 	private void writeError(String format) {
 		System.out.println("FORMAT ERROR! " + "Enter a " + format + " formatted value.");
 	}
+
 }

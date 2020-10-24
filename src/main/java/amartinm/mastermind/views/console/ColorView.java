@@ -1,9 +1,9 @@
 package amartinm.mastermind.views.console;
 
 import amartinm.mastermind.models.Color;
-import amartinm.utils.WithConsoleView;
+import amartinm.utils.Console;
 
-class ColorView extends WithConsoleView {
+class ColorView {
 
     private static final char[] INITIALS = {'r', 'b', 'y', 'g', 'o', 'p'};
 
@@ -31,7 +31,7 @@ class ColorView extends WithConsoleView {
     }
 
     void write() {
-        this.console.write(ColorView.INITIALS[this.color.ordinal()]);
+        Console.instance().write(ColorView.INITIALS[this.color.ordinal()]);
     }
 
 }

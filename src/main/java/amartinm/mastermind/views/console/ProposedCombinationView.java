@@ -4,9 +4,9 @@ import amartinm.mastermind.models.Color;
 import amartinm.mastermind.models.Error;
 import amartinm.mastermind.models.Combination;
 import amartinm.mastermind.models.ProposedCombination;
-import amartinm.utils.WithConsoleView;
+import amartinm.utils.Console;
 
-class ProposedCombinationView extends WithConsoleView {
+class ProposedCombinationView {
 	
 	private final ProposedCombination proposedCombination;
 
@@ -25,7 +25,7 @@ class ProposedCombinationView extends WithConsoleView {
 		do {
 			error = null;
 			MessageView.PROPOSED_COMBINATION.write();
-			String characters = this.console.readString();
+			String characters = Console.instance().readString();
 			if (characters.length() != Combination.getWidth()) {
 				error = Error.WRONG_LENGTH;
 			} else {

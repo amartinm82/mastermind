@@ -1,17 +1,20 @@
 package amartinm.mastermind.controllers;
 
-import amartinm.mastermind.models.Game;
-import amartinm.mastermind.models.State;
+import amartinm.mastermind.models.Session;
 
-public class ResumeController extends UseCaseController {
+public class ResumeController extends UseCaseController implements AcceptorController {
 
-    public ResumeController(Game game, State state) {
-        super(game, state);
+    public ResumeController(Session session) {
+        super(session);
     }
 
-    public void resume() {
-        this.game.clear();
-        this.state.reset();
+    public void resume(boolean isResumed) {
+        if (isResumed) {
+            this.session.reset();
+        } else {
+            this.session.next();
+        }
+
     }
 
     @Override

@@ -1,9 +1,9 @@
 package amartinm.mastermind.views;
 
-import amartinm.mastermind.controllers.UseCaseController;
+import amartinm.mastermind.controllers.AcceptorController;
 
 public abstract class View {
 
-    public abstract void interact(UseCaseController controller);
+    public abstract void interact(AcceptorController controller);
 
 }

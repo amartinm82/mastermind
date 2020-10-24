@@ -1,6 +1,6 @@
 package amartinm.utils;
 
-public class YesNoDialog  extends WithConsoleView {
+public class YesNoDialog {
 
 	private static final char AFIRMATIVE = 'y';
 
@@ -15,11 +15,12 @@ public class YesNoDialog  extends WithConsoleView {
 		assert title != null;
 		char answer;
 		boolean ok;
+		Console console = Console.instance();
 		do {
-			answer = this.console.readChar(title + YesNoDialog.QUESTION);
+			answer = console.readChar(title + YesNoDialog.QUESTION);
 			ok = YesNoDialog.isAfirmative(answer) || YesNoDialog.isNegative(answer);
 			if (!ok) {
-				this.console.writeln(YesNoDialog.MESSAGE);
+				console.writeln(YesNoDialog.MESSAGE);
 			}
 		} while (!ok);
 		return YesNoDialog.isAfirmative(answer);

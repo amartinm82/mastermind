@@ -1,9 +1,9 @@
 package amartinm.mastermind.views.console;
 
 import amartinm.mastermind.models.Error;
-import amartinm.utils.WithConsoleView;
+import amartinm.utils.Console;
 
-class ErrorView extends WithConsoleView {
+class ErrorView {
 
 	private static final String[] MESSAGES = { 
 			"Repeated colors",
@@ -17,7 +17,7 @@ class ErrorView extends WithConsoleView {
 	}
 	
 	void writeln() {
-		this.console.writeln(ErrorView.MESSAGES[this.error.ordinal()]);
+		Console.instance().writeln(ErrorView.MESSAGES[this.error.ordinal()]);
 	}
 
 }

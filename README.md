@@ -1,4 +1,4 @@
-<h1 align="center">Welcome to Master Mind. Solución 8.2. **mvp.pm.withDoubleDispatching** 👋</h1>
+<h1 align="center">Welcome to Master Mind. Solución 9.3. **mvp.pm.withComposite** 👋</h1>
 <p>
   <a href="/docs" target="_blank">
     <img alt="Documentation" src="https://img.shields.io/badge/documentation-yes-brightgreen.svg" />
