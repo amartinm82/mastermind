@@ -21,4 +21,13 @@ public class ProposedCombination extends Combination {
         return this.colors;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (Color color : this.colors) {
+            sb.append(color.getInitial());
+        }
+        return sb.toString();
+    }
+
 }

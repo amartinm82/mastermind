@@ -1,15 +1,24 @@
 package amartinm.mastermind.models;
 
+import amartinm.mastermind.distributed.dispatchers.FrameType;
+import amartinm.utils.TCPIP;
+
 public class Session {
 
     private final State state;
     private final Game game;
-    private final GameRegistry registry;
+    private final Registry registry;
+    private final TCPIP tcpip;
 
-    public Session() {
+    public Session(TCPIP tcpip) {
         this.state = new State();
         this.game = new Game();
-        this.registry = new GameRegistry(this.game);
+        this.registry = new Registry(this.game);
+        this.tcpip = tcpip;
+    }
+
+    public TCPIP getTcpip() {
+        return tcpip;
     }
 
     public void next() {
@@ -17,7 +26,11 @@ public class Session {
     }
 
     public StateValue getValueState() {
-        return this.state.getValueState();
+        if (this.tcpip == null) {
+            return this.state.getValueState();
+        }
+        this.tcpip.send(FrameType.STATE.name());
+        return StateValue.values()[this.tcpip.receiveInt()];
     }
 
     public boolean undoable() {

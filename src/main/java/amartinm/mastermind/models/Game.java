@@ -52,11 +52,11 @@ public class Game {
         return this.results.get(position);
     }
 
-    public GameMemento createMemento() {
-        return new GameMemento(this.proposedCombinations, this.results, this.attempts);
+    public Memento createMemento() {
+        return new Memento(this.proposedCombinations, this.results, this.attempts);
     }
 
-    public void set(GameMemento memento) {
+    public void set(Memento memento) {
         this.proposedCombinations = new ArrayList<>();
         this.proposedCombinations.addAll(memento.getProposedCombinations());
         this.attempts = memento.getAttempts();

@@ -1,8 +1,13 @@
 package amartinm.mastermind.controllers;
 
-public interface AcceptorController {
+import amartinm.mastermind.models.Session;
 
-    void accept(ControllerVisitor controllerVisitor);
+public abstract class AcceptorController extends Controller {
 
-    void next();
+    AcceptorController(Session session) {
+        super(session);
+    }
+
+    public abstract void accept(ControllerVisitor controllerVisitor);
+
 }

@@ -1,15 +1,41 @@
 package amartinm.mastermind.models;
 
 public enum Color {
-	RED, 
-	BLUE, 
-	YELLOW, 
-	GREEN, 
-	ORANGE, 
-	PURPLE;
+    RED('r'),
+    BLUE('b'),
+    YELLOW('y'),
+    GREEN('g'),
+    ORANGE('o'),
+    PURPLE('p');
 
-	static int length() {
-		return Color.values().length;
-	}
-	
+    private final char initial;
+
+    Color(char initial) {
+        this.initial = initial;
+    }
+
+    static int length() {
+        return Color.values().length;
+    }
+
+    public static String allInitials() {
+        StringBuilder result = new StringBuilder();
+        for (Color color : Color.values()) {
+            result.append(color.initial);
+        }
+        return result.toString();
+    }
+
+    public static Color getInstance(char character) {
+        for (Color color : Color.values()) {
+            if (color.initial == character) {
+                return color;
+            }
+        }
+        return null;
+    }
+
+    public char getInitial() {
+        return initial;
+    }
 }
