@@ -8,7 +8,7 @@ public class MastermindServer {
 
     private MastermindServer() {
         this.dispatcherPrototype = new DispatcherPrototype();
-        LogicServer logic = new LogicServer(true);
+        LogicImplementationServer logic = new LogicImplementationServer();
         logic.createDispatchers(this.dispatcherPrototype);
     }
 

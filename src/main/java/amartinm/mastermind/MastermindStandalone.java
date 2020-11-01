@@ -1,10 +1,13 @@
 package amartinm.mastermind;
 
+import amartinm.mastermind.controllers.Logic;
+import amartinm.mastermind.controllers.implementation.LogicImplementation;
+
 public class MastermindStandalone extends Mastermind {
 
     @Override
-    protected boolean isStandalone() {
-        return true;
+    protected Logic createLogic() {
+        return new LogicImplementation();
     }
 
     public static void main(String[] args) {

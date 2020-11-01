@@ -53,7 +53,11 @@ public class Game {
     }
 
     public Memento createMemento() {
-        return new Memento(this.proposedCombinations, this.results, this.attempts);
+        List<ProposedCombination> proposedCombinationsCopy = new ArrayList<>();
+        proposedCombinationsCopy.addAll(this.proposedCombinations);
+        List<Result> resultsCopy = new ArrayList<>();
+        resultsCopy.addAll(this.results);
+        return new Memento(proposedCombinationsCopy, resultsCopy, this.attempts);
     }
 
     public void set(Memento memento) {

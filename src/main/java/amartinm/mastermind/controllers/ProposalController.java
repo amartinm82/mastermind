@@ -5,32 +5,35 @@ import amartinm.mastermind.models.*;
 
 public class ProposalController extends Controller {
 
+    private SessionImplementation sessionImplementation;
+
     public ProposalController(Session session) {
         super(session);
+        this.sessionImplementation = (SessionImplementation) this.session;
     }
 
     public void addProposedCombination(ProposedCombination proposedCombination) {
-        this.session.addProposedCombination(proposedCombination);
+        this.sessionImplementation.addProposedCombination(proposedCombination);
     }
 
     public int getAttempts() {
-        return this.session.getAttempts();
+        return this.sessionImplementation.getAttempts();
     }
 
     public ProposedCombination getProposedCombination(int position) {
-        return this.session.getProposedCombination(position);
+        return this.sessionImplementation.getProposedCombination(position);
     }
 
     public Result getResult(int position) {
-        return this.session.getResult(position);
+        return this.sessionImplementation.getResult(position);
     }
 
     public boolean isWinner() {
-        return this.session.isWinner();
+        return this.sessionImplementation.isWinner();
     }
 
     public boolean isLooser() {
-        return this.session.isLooser();
+        return this.sessionImplementation.isLooser();
     }
 
     public Error isCombinationValid(String characters) {
