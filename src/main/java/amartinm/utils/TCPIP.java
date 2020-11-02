@@ -1,10 +1,5 @@
 package amartinm.utils;
 
-import amartinm.mastermind.models.Color;
-import amartinm.mastermind.models.Error;
-import amartinm.mastermind.models.ProposedCombination;
-import amartinm.mastermind.models.Result;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -77,33 +72,6 @@ public class TCPIP {
             e.printStackTrace();
         }
         return result;
-    }
-
-    public Error receiveError() {
-        String error = this.receiveLine();
-        if (error.equals("null")) {
-            return null;
-        }
-        return Error.valueOf(error);
-    }
-
-    public Result receiveResult() {
-        int blacks = this.receiveInt();
-        int whites = this.receiveInt();
-        return new Result(blacks, whites);
-    }
-
-    public ProposedCombination receiveProposedCombination() {
-        ProposedCombination proposedCombination = new ProposedCombination();
-        String characters = this.receiveLine();
-        for (int i = 0; i < characters.length(); i++) {
-            Color color = Color.getInstance(characters.charAt(i));
-            if (color == null) {
-                return null;
-            }
-            proposedCombination.getColors().add(color);
-        }
-        return proposedCombination;
     }
 
     public void close() {

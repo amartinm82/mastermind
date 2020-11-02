@@ -11,7 +11,7 @@
 </head>
 <body class="book">
 <div id="header">
-<h1>Master Mind. Solución 9.3. <strong>mvp.pm.withComposite</strong></h1>
+<h1>Master Mind. Solución 11.4. <strong>mvp.pm.withProxy</strong></h1>
 <div class="details">
 <span id="author" class="author">Álvaro Martín Martín</span><br>
 <span id="email" class="email"><a href="mailto:amartinm82@gmail.com">amartinm82@gmail.com</a></span><br>
@@ -28,6 +28,10 @@
 <li><a href="#paquete-mastermind-views">Paquete <em>mastermind.views</em></a></li>
 <li><a href="#paquete-mastermind-models">Paquete <em>mastermind.models</em></a></li>
 <li><a href="#paquete-mastermind-controllers">Paquete <em>mastermind.controllers</em></a></li>
+<li><a href="#paquete-mastermind-controllers-implementation">Paquete <em>mastermind.controllers.implementation</em></a></li>
+<li><a href="#paquete-mastermind-distributed">Paquete <em>mastermind.distributed</em></a></li>
+<li><a href="#paquete-mastermind-distributed-dispatchers">Paquete <em>mastermind.distributed.dispatchers</em></a></li>
+<li><a href="#paquete-mastermind-distributed-dispatchers-undoredo">Paquete <em>mastermind.distributed.dispatchers.undoredo</em></a></li>
 <li><a href="#paquete-mastermind-utils">Paquete <em>mastermind.utils</em></a></li>
 </ul>
 </li>
@@ -79,7 +83,7 @@
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="imageblock">
 <div class="content">
-<img src="build/docs/asciidoc/images/Dibujo.jpg" alt="Dibujo">
+<img src="build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/images/Dibujo.jpg" alt="Dibujo">
 </div>
 </div></div></td>
 </tr>
@@ -93,7 +97,7 @@
 <div class="ulist">
 <ul>
 <li>
-<p>Arquitectura Documento/Vista mediante <strong>Patrón de Vista Separada</strong></p>
+<p>Arquitectura Documento/Vista mediante <strong>Patrón de Vista Separada</strong> con Proxy</p>
 </li>
 </ul>
 </div>
@@ -101,7 +105,7 @@
 <h3 id="arquitectura">Arquitectura</h3>
 <div class="imageblock">
 <div class="content">
-<img src="build/docs/asciidoc/images/version2Arquitectura.svg" alt="version2Arquitectura" width="754" height="531">
+<img src="build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/images/version2Arquitectura.svg" alt="version2Arquitectura" width="810" height="766">
 </div>
 </div>
 </div>
@@ -109,7 +113,7 @@
 <h3 id="paquete-mastermind">Paquete <em>mastermind</em></h3>
 <div class="imageblock">
 <div class="content">
-<img src="build/docs/asciidoc/images/version2Mastermind.svg" alt="version2Mastermind" width="782" height="579">
+<img src="build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/images/version2Mastermind.svg" alt="version2Mastermind" width="740" height="494">
 </div>
 </div>
 </div>
@@ -117,7 +121,7 @@
 <h3 id="paquete-mastermind-views">Paquete <em>mastermind.views</em></h3>
 <div class="imageblock">
 <div class="content">
-<img src="build/docs/asciidoc/images/mastermindViews.svg" alt="mastermindViews" width="2544" height="1641">
+<img src="build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/images/mastermindViews.svg" alt="mastermindViews" width="2827" height="1602">
 </div>
 </div>
 </div>
@@ -125,7 +129,7 @@
 <h3 id="paquete-mastermind-models">Paquete <em>mastermind.models</em></h3>
 <div class="imageblock">
 <div class="content">
-<img src="build/docs/asciidoc/images/paqueteMastermindModel.svg" alt="paqueteMastermindModel" width="1209" height="1775">
+<img src="build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/images/paqueteMastermindModel.svg" alt="paqueteMastermindModel" width="1079" height="1641">
 </div>
 </div>
 </div>
@@ -133,7 +137,39 @@
 <h3 id="paquete-mastermind-controllers">Paquete <em>mastermind.controllers</em></h3>
 <div class="imageblock">
 <div class="content">
-<img src="build/docs/asciidoc/images/paqueteMastermindController.svg" alt="paqueteMastermindController" width="2163" height="843">
+<img src="build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/images/paqueteMastermindController.svg" alt="paqueteMastermindController" width="1832" height="939">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="paquete-mastermind-controllers-implementation">Paquete <em>mastermind.controllers.implementation</em></h3>
+<div class="imageblock">
+<div class="content">
+<img src="build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/images/mastermindControllersImplementation.svg" alt="mastermindControllersImplementation" width="1982" height="717">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="paquete-mastermind-distributed">Paquete <em>mastermind.distributed</em></h3>
+<div class="imageblock">
+<div class="content">
+<img src="build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/images/mastermindDistributed.svg" alt="mastermindDistributed" width="4930" height="840">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="paquete-mastermind-distributed-dispatchers">Paquete <em>mastermind.distributed.dispatchers</em></h3>
+<div class="imageblock">
+<div class="content">
+<img src="build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/images/mastermindDistributedDispatchers.svg" alt="mastermindDistributedDispatchers" width="3269" height="845">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="paquete-mastermind-distributed-dispatchers-undoredo">Paquete <em>mastermind.distributed.dispatchers.undoredo</em></h3>
+<div class="imageblock">
+<div class="content">
+<img src="build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/images/mastermindDistributedDispatchersUndoRedo.svg" alt="mastermindDistributedDispatchersUndoRedo" width="1040" height="420">
 </div>
 </div>
 </div>
@@ -141,7 +177,7 @@
 <h3 id="paquete-mastermind-utils">Paquete <em>mastermind.utils</em></h3>
 <div class="imageblock">
 <div class="content">
-<img src="build/docs/asciidoc/images/mastermindUtils2.svg" alt="mastermindUtils2" width="764" height="511">
+<img src="build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/images/mastermindUtils2.svg" alt="mastermindUtils2" width="987" height="575">
 </div>
 </div>
 </div>
@@ -206,7 +242,7 @@
 <div class="sectionbody">
 <div class="imageblock">
 <div class="content">
-<img src="build/docs/asciidoc/images/diagramaImplementacion.svg" alt="diagramaImplementacion" width="1157" height="254">
+<img src="build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/images/diagramaImplementacion.svg" alt="diagramaImplementacion" width="1297" height="353">
 </div>
 </div>
 </div>
@@ -216,7 +252,7 @@
 <div class="sectionbody">
 <div class="imageblock">
 <div class="content">
-<img src="build/docs/asciidoc/images/diagramaDespliegue.svg" alt="diagramaDespliegue" width="220" height="202">
+<img src="build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/images/diagramaDespliegue.svg" alt="diagramaDespliegue" width="220" height="202">
 </div>
 </div>
 </div>
@@ -237,7 +273,7 @@
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1<br>
-Last updated 2020-10-24 20:37:38 +0200
+Last updated 2020-11-02 20:07:56 +0100
 </div>
 </div>
 </html>

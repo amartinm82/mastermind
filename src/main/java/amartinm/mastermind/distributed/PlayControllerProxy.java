@@ -2,11 +2,12 @@ package amartinm.mastermind.distributed;
 
 import amartinm.mastermind.controllers.PlayController;
 import amartinm.mastermind.distributed.dispatchers.FrameType;
+import amartinm.mastermind.distributed.dispatchers.TCPIP;
 import amartinm.mastermind.models.Error;
 import amartinm.mastermind.models.ProposedCombination;
 import amartinm.mastermind.models.Result;
 import amartinm.mastermind.models.Session;
-import amartinm.utils.TCPIP;
+
 
 public class PlayControllerProxy extends PlayController {
 

@@ -1,5 +1,10 @@
 package amartinm.mastermind.distributed.dispatchers;
 
+import amartinm.mastermind.models.Color;
+import amartinm.mastermind.models.Error;
+import amartinm.mastermind.models.ProposedCombination;
+import amartinm.mastermind.models.Result;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -37,6 +42,33 @@ public class TCPIP extends amartinm.utils.TCPIP {
 
     public TCPIP(ServerSocket serverSocket, Socket socket) {
         super(serverSocket, socket);
+    }
+
+    public Error receiveError() {
+        String error = this.receiveLine();
+        if (error.equals("null")) {
+            return null;
+        }
+        return Error.valueOf(error);
+    }
+
+    public Result receiveResult() {
+        int blacks = this.receiveInt();
+        int whites = this.receiveInt();
+        return new Result(blacks, whites);
+    }
+
+    public ProposedCombination receiveProposedCombination() {
+        ProposedCombination proposedCombination = new ProposedCombination();
+        String characters = this.receiveLine();
+        for (int i = 0; i < characters.length(); i++) {
+            Color color = Color.getInstance(characters.charAt(i));
+            if (color == null) {
+                return null;
+            }
+            proposedCombination.getColors().add(color);
+        }
+        return proposedCombination;
     }
 
     public void close() {

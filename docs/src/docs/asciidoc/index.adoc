@@ -1,4 +1,4 @@
-= Master Mind. Solución 9.3. *mvp.pm.withComposite*
+= Master Mind. Solución 11.4. *mvp.pm.withProxy*
 Álvaro Martín Martín <amartinm82@gmail.com>
 :toc-title: Índice
 :toc: left
@@ -27,7 +27,7 @@ image::Dibujo.jpg[]
 
 == Vista de Lógica/Diseño
 
-- Arquitectura Documento/Vista mediante *Patrón de Vista Separada*
+- Arquitectura Documento/Vista mediante *Patrón de Vista Separada* con Proxy
 
 === Arquitectura 
 
@@ -36,26 +36,33 @@ image::Dibujo.jpg[]
 
 package mastermind #DDDDDD { } 
 mastermind .down.> mastermind.controllers
-mastermind .down.> mastermind.models
+mastermind.distributed .down.> mastermind
+mastermind.controllers .down.> mastermind.models
+mastermind.views .down.> mastermind.models
+mastermind.views .down.> utils
 mastermind .down.> mastermind.views
 
-package mastermind.controllers #DDDDDD { }
+package mastermind.controllers #DDDDDD {
+    package mastermind.controllers.implementation {}
+}
 mastermind.controllers .down.> mastermind.models
+
+package mastermind.distributed #DDDDDD {
+    package mastermind.distributed.dispatchers {
+        package mastermind.distributed.dispatchers.undoredo{}
+    }
+}
 
 package mastermind.models #DDDDDD { } 
 package java.util{ }
 mastermind.models .down.> java.util
 
-package mastermind.utils #DDDDDD { } 
+package utils #DDDDDD { }
 package java.io{ }
-mastermind.utils .down.> java.io
+utils .down.> java.io
 
-package mastermind.views #DDDDDD {
-    package mastermind.views.console {}
-    package mastermind.views.graphics {}
-}
+package mastermind.views{}
 mastermind.views .down.> mastermind.controllers
-mastermind.views.console .down.> mastermind.utils
 
 ....
 
@@ -72,67 +79,66 @@ abstract class  mastermind.Mastermind{
 # play(): void
 }
 
-class mastermind.ConsoleMastermind extends mastermind.Mastermind{
-# createView(): View
-+ {static} main(String[] args): void
-}
-
-class mastermind.GraphicsMastermind extends mastermind.Mastermind{
-# createView(): View
-+ {static} main(String[] args): void
-}
-
 mastermind.Mastermind *-down-> mastermind.views.View
 mastermind.Mastermind *-down-> mastermind.controllers.Logic
 mastermind.Mastermind .down.> mastermind.controllers.AcceptorController
 
-mastermind.GraphicsMastermind .down.> mastermind.views.graphics.View
+class mastermind.MastermindStandalone extends mastermind.Mastermind {
+    #createLogic(): Logic
+    {static} +main(String[]): void
+}
+mastermind.MastermindStandalone ..> mastermind.controllers.implementation.LogicImplementation
 
-mastermind.ConsoleMastermind .down.> mastermind.views.console.View
 
-mastermind.views.console.View <|.down.> mastermind.controllers.ControllerVisitor
-mastermind.views.View <|-down-> mastermind.views.console.View
-mastermind.views.View <|-down-> mastermind.views.graphics.View
+class mastermind.controllers.implementation.LogicImplementation extends mastermind.controllers.Logic{
+    #startControllerImplementation: StartControllerImplementation
+    #playControllerImplementation: PlayControllerImplementation
+    #resumeControllerImplementation: ResumeControllerImplementation
+}
 ....
 
 === Paquete _mastermind.views_ 
 
 [plantuml,mastermindViews,svg]
 ....
-
-
-abstract class mastermind.views.View {
-+ {abstract} interact(UseCaseController controller): void
+abstract class utils.Command {
+    #title: String
+    #Command(String)
+    {abstract} #execute(): void
+    {abstract} #isActive(): boolean
 }
 
-mastermind.views.View .up.> mastermind.controllers.AcceptorController
-
-class mastermind.views.graphics.View {
-+ interact(UseCaseController controller): void
+abstract class mastermind.views.Command extends utils.Command {
+# final playController: PlayController
+# Command(String title, PlayController playController)
 }
+mastermind.views.Command *-down-> mastermind.controllers.PlayController
 
-mastermind.views.View <|-left- mastermind.views.graphics.View
-mastermind.views.graphics.View .left.> mastermind.controllers.AcceptorController
-
-class mastermind.views.console.View{
-- final startView: StartView
-- final playView: PlayView
-- final resumeView: ResumeView
-
-+ View()
-+ interact(UseCaseController controller): void
-+ visit(StartController startController): void
-+ visit(PlayController playController): void
-+ visit(ResumeController resumeController): void
+class mastermind.views.ErrorView {
+- {static} final MESSAGES: String[]
+- final error: Error
+ErrorView(Error error)
+writeln(): void
 }
-mastermind.views.View <|-up- mastermind.views.console.View
-mastermind.controllers.ControllerVisitor <|.up. mastermind.views.console.View
-mastermind.views.console.View *-down-> mastermind.views.console.StartView
-mastermind.views.console.View *-down-> mastermind.views.console.PlayView
-mastermind.views.console.View *-down-> mastermind.views.console.ResumeView
-mastermind.views.console.View .up.> mastermind.controllers.AcceptorController
+mastermind.views.ErrorView *-down-> mastermind.models.Error
+mastermind.views.ErrorView .down.> utils.Console
 
-enum mastermind.views.console.MessageView{
+
+class mastermind.views.GameView {
+- final playController: PlayController
+- final secretCombinationView: SecretCombinationView
+
+GameView(PlayController playController)
++ write(): void
+}
+mastermind.views.GameView *-down-> mastermind.views.SecretCombinationView
+mastermind.views.GameView *-down-> mastermind.controllers.PlayController
+mastermind.views.GameView .down.> utils.Console
+mastermind.views.GameView .down.> mastermind.views.MessageView
+mastermind.views.GameView .down.> mastermind.views.ProposedCombinationView
+mastermind.views.GameView .down.> mastermind.views.ResultView
+
+enum mastermind.views.MessageView{
 + {static} ATTEMPTS: MessageView
 + {static} RESUME: MessageView
 + {static} RESULT: MessageView
@@ -154,152 +160,111 @@ writeln(): void
 writeln(int attempts): void
 writeln(int blacks, int whites): void
 }
+mastermind.views.MessageView *-down-> utils.Console
 
-mastermind.views.console.MessageView *-down-> utils.Console
-
-class mastermind.views.console.StartView {
-# interact(StartController startController): void
+class mastermind.views.PlayMenu extends utils.Menu {
+PlayMenu(PlayController playController)
 }
+mastermind.views.PlayMenu .down.> mastermind.controllers.PlayController
+mastermind.views.PlayMenu .down.> mastermind.views.ProposalCommand
+mastermind.views.PlayMenu .down.> mastermind.views.UndoCommand
+mastermind.views.PlayMenu .down.> mastermind.views.RedoCommand
 
-mastermind.views.console.StartView .down.> mastermind.controllers.StartController
-mastermind.views.console.StartView .up.> mastermind.views.console.MessageView
-mastermind.views.console.StartView .down.> mastermind.views.console.SecretCombinationView
-
-class mastermind.views.console.SecretCombinationView {
-SecretCombinationView()
-writeln(): void
+class mastermind.views.PlayView {
+PlayView()
+interact(PlayController playController): void
 }
+mastermind.views.PlayView .down.> mastermind.controllers.PlayController
+mastermind.views.PlayView .down.> mastermind.views.PlayMenu
 
-mastermind.views.console.SecretCombinationView .down.> mastermind.models.SecretCombination
-mastermind.views.console.SecretCombinationView .up.> mastermind.views.console.MessageView
-mastermind.views.console.SecretCombinationView .down.> utils.Console
-
-class mastermind.views.console.ResumeView {
-interact(ResumeController resumeController): void
+class mastermind.views.ProposalCommand extends mastermind.views.Command {
+ProposalCommand(PlayController playController)
+# execute(): void
+# isActive(): boolean
 }
+mastermind.views.ProposalCommand *-down-> mastermind.controllers.PlayController
+mastermind.views.ProposalCommand .down.> mastermind.views.MessageView
+mastermind.views.ProposalCommand .down.> mastermind.models.ProposedCombination
+mastermind.views.ProposalCommand .down.> mastermind.views.ProposedCombinationView
+mastermind.views.ProposalCommand .down.> mastermind.views.GameView
 
-mastermind.views.console.ResumeView .down.> mastermind.controllers.ResumeController
-mastermind.views.console.ResumeView .down.> utils.YesNoDialog
-mastermind.views.console.ResumeView .up.> mastermind.views.console.MessageView
-
-class mastermind.views.console.ResultView {
-- final result: Result
-ResultView(Result result)
-writeln(): void
-}
-
-mastermind.views.console.ResultView *-down-> mastermind.models.Result
-mastermind.views.console.ResultView .up.> mastermind.views.console.MessageView
-
-class mastermind.views.console.ProposedCombinationView {
+class mastermind.views.ProposedCombinationView {
 - final proposedCombination: ProposedCombination
 ProposedCombinationView(ProposedCombination proposedCombination)
 write(): void
 read(): void
 }
+mastermind.views.ProposedCombinationView *-down-> mastermind.controllers.PlayController
+mastermind.views.ProposedCombinationView .down.> mastermind.models.ProposedCombination
+mastermind.views.ProposedCombinationView .down.> mastermind.models.Error
+mastermind.views.ProposedCombinationView .up.> mastermind.views.MessageView
+mastermind.views.ProposedCombinationView .down.> utils.Console
+mastermind.views.ProposedCombinationView .down.> mastermind.views.ErrorView
+mastermind.views.ProposedCombinationView .down.> mastermind.models.Color
 
-mastermind.views.console.ProposedCombinationView *-down-> mastermind.models.ProposedCombination
-mastermind.views.console.ProposedCombinationView .down.> mastermind.models.Color
-mastermind.views.console.ProposedCombinationView .down.> mastermind.views.console.ColorView
-mastermind.views.console.ProposedCombinationView .down.> mastermind.models.Error
-mastermind.views.console.ProposedCombinationView .up.> mastermind.views.console.MessageView
-mastermind.views.console.ProposedCombinationView .down.> mastermind.views.console.ErrorView
-mastermind.views.console.ProposedCombinationView .down.> utils.Console
-
-class mastermind.views.console.PlayView {
-PlayView()
-interact(PlayController playController): void
-}
-
-mastermind.views.console.PlayView .down.> mastermind.controllers.PlayController
-mastermind.views.console.PlayView .down.> mastermind.views.console.PlayMenu
-
-
-class mastermind.views.console.ErrorView {
-- {static} final MESSAGES: String[]
-- final error: Error
-ErrorView(Error error)
-writeln(): void
-}
-
-mastermind.views.console.ErrorView *-down-> mastermind.models.Error
-mastermind.views.console.ErrorView .down.> utils.Console
-
-class mastermind.views.console.ColorView {
-- {static} final INITIALS: char[]
-- final color: Color
-ColorView(Color color)
-{static} allInitials(): String
-{static} getInstance(char character): Color
-write(): void
-}
-
-mastermind.views.console.ColorView *-down-> mastermind.models.Color
-mastermind.views.console.ColorView .down.> utils.Console
-
-abstract class mastermind.views.console.Command extends utils.Command {
-# final playController: PlayController
-# Command(String title, PlayController playController)
-}
-
-mastermind.views.console.Command *-down-> mastermind.controllers.PlayController
-
-
-class mastermind.views.console.GameView {
-- final playController: PlayController
-- final secretCombinationView: SecretCombinationView
-
-GameView(PlayController playController)
-+ write(): void
-}
-
-mastermind.views.console.GameView *-down-> mastermind.views.console.SecretCombinationView
-mastermind.views.console.GameView *-down-> mastermind.controllers.PlayController
-mastermind.views.console.GameView .down.> utils.Console
-mastermind.views.console.GameView .down.> mastermind.views.console.MessageView
-mastermind.views.console.GameView .down.> mastermind.views.console.ProposedCombinationView
-mastermind.views.console.GameView .down.> mastermind.views.console.ResultView
-
-class mastermind.views.console.PlayMenu extends utils.Menu {
-PlayMenu(PlayController playController)
-}
-
-mastermind.views.console.PlayMenu .down.> mastermind.controllers.PlayController
-mastermind.views.console.PlayMenu .down.> mastermind.views.console.ProposalCommand
-mastermind.views.console.PlayMenu .down.> mastermind.views.console.UndoCommand
-mastermind.views.console.PlayMenu .down.> mastermind.views.console.RedoCommand
-
-class mastermind.views.console.ProposalCommand extends mastermind.views.console.Command {
-ProposalCommand(PlayController playController)
-# execute(): void
-# isActive(): boolean
-}
-
-mastermind.views.console.ProposalCommand .down.> mastermind.controllers.PlayController
-mastermind.views.console.ProposalCommand .down.> mastermind.views.console.MessageView
-mastermind.views.console.ProposalCommand .down.> mastermind.models.ProposedCombination
-mastermind.views.console.ProposalCommand .down.> mastermind.views.console.ProposedCombinationView
-mastermind.views.console.ProposalCommand .down.> mastermind.views.console.GameView
-
-class mastermind.views.console.UndoCommand extends mastermind.views.console.Command {
-UndoCommand(PlayController playController)
-# execute(): void
-# isActive(): boolean
-}
-
-mastermind.views.console.UndoCommand .down.> mastermind.controllers.PlayController
-mastermind.views.console.UndoCommand .down.> mastermind.views.console.MessageView
-mastermind.views.console.UndoCommand .down.> mastermind.views.console.GameView
-
-class mastermind.views.console.RedoCommand extends mastermind.views.console.Command {
+class mastermind.views.RedoCommand extends mastermind.views.Command {
 RedoCommand(PlayController playController)
 # execute(): void
 # isActive(): boolean
 }
+mastermind.views.RedoCommand *-down-> mastermind.controllers.PlayController
+mastermind.views.RedoCommand .down.> mastermind.views.MessageView
+mastermind.views.RedoCommand .down.> mastermind.views.GameView
 
-mastermind.views.console.RedoCommand .down.> mastermind.controllers.PlayController
-mastermind.views.console.RedoCommand .down.> mastermind.views.console.MessageView
-mastermind.views.console.RedoCommand .down.> mastermind.views.console.GameView
+class mastermind.views.ResultView {
+- final result: Result
+ResultView(Result result)
+writeln(): void
+}
+mastermind.views.ResultView *-down-> mastermind.models.Result
+mastermind.views.ResultView .up.> mastermind.views.MessageView
+
+class mastermind.views.ResumeView {
+interact(ResumeController resumeController): void
+}
+mastermind.views.ResumeView .down.> mastermind.controllers.ResumeController
+mastermind.views.ResumeView .up.> mastermind.views.MessageView
+mastermind.views.ResumeView .down.> utils.YesNoDialog
+
+class mastermind.views.SecretCombinationView {
+SecretCombinationView()
+writeln(): void
+}
+mastermind.views.SecretCombinationView .down.> mastermind.models.SecretCombination
+mastermind.views.SecretCombinationView .up.> mastermind.views.MessageView
+mastermind.views.SecretCombinationView .down.> utils.Console
+
+class mastermind.views.StartView {
+# interact(StartController startController): void
+}
+mastermind.views.StartView .down.> mastermind.controllers.StartController
+mastermind.views.StartView .up.> mastermind.views.MessageView
+mastermind.views.StartView .down.> mastermind.views.SecretCombinationView
+
+class mastermind.views.UndoCommand extends mastermind.views.Command {
+UndoCommand(PlayController playController)
+# execute(): void
+# isActive(): boolean
+}
+mastermind.views.UndoCommand *-down-> mastermind.controllers.PlayController
+mastermind.views.UndoCommand .down.> mastermind.views.MessageView
+mastermind.views.UndoCommand .down.> mastermind.views.GameView
+
+class mastermind.views.View implements mastermind.controllers.ControllerVisitor{
+- final startView: StartView
+- final playView: PlayView
+- final resumeView: ResumeView
+
++ View()
++ interact(UseCaseController controller): void
++ visit(StartController startController): void
++ visit(PlayController playController): void
++ visit(ResumeController resumeController): void
+}
+mastermind.views.View *-down-> mastermind.views.StartView
+mastermind.views.View *-down-> mastermind.views.PlayView
+mastermind.views.View *-down-> mastermind.views.ResumeView
+mastermind.views.View .up.> mastermind.controllers.AcceptorController
 ....
 
 === Paquete _mastermind.models_ 
@@ -307,264 +272,646 @@ mastermind.views.console.RedoCommand .down.> mastermind.views.console.GameView
 [plantuml,paqueteMastermindModel,svg]
 ....
 
-enum mastermind.models.Color{
-+ {static} RED: Color
-+ {static} BLUE: Color
-+ {static} YELLOW: Color
-+ {static} GREEN: Color
-+ {static} ORANGE: Color
-+ {static} PURPLE: Color
-{static} length(): int
+namespace mastermind.models {
+
+    enum Color {
+        {static} +RED
+        {static} +BLUE
+        {static} +YELLOW
+        {static} +GREEN
+        {static} +ORANGE
+        {static} +PURPLE
+        {static} +allInitials(): String
+        {static} +getInstance(char): Color
+        +getInitial(): char
+    }
+
+    abstract class Combination {
+        - {static} final WIDTH: int
+        # final List<Color> colors;
+
+        # Combination ()
+        + {static} getWidth(): int
+    }
+    Combination *--> Color
+
+    enum Error {
+        {static} +DUPLICATED
+        {static} +WRONG_CHARACTERS
+        {static} +WRONG_LENGTH
+    }
+
+    class  Game{
+        - {static} final MAX_LONG: int
+        - secretCombination: SecretCombination
+        - proposedCombinations: List<ProposedCombination>
+        - results: List<Result>
+        - attempts: int
+        + Game()
+        + clear(): void
+        + addProposedCombination(ProposedCombination proposedCombination): void
+        + isLooser(): boolean
+        + isWinner(): boolean
+        + getAttempts(): int
+        + getProposedCombination(int position): ProposedCombination
+        + getResult(int position): Result
+        + createMemento(): GameMemento
+        + set(GameMemento memento): void
+    }
+    Game *-down-> SecretCombination
+    Game *-down-> Result
+    Game *-down-> ProposedCombination
+    Game .down.> Memento
+
+    class Memento {
+        - final proposedCombinations: List<ProposedCombination>
+        - final results: List<Result>
+        - final attempts: int
+
+        +Memento(List<ProposedCombination>, List<Result>, int)
+        +getProposedCombinations(): List<ProposedCombination>
+        +getResults(): List<Result>
+        +getAttempts(): int
+    }
+    Memento *-down-> Result
+    Memento *-down-> ProposedCombination
+
+    class ProposedCombination extends Combination {
+        contains(Color color, int position): boolean
+        contains(Color color): boolean
+        + getColors(): List<Color>
+        + toString(): String
+    }
+    ProposedCombination .down.> Color
+
+    class Registry {
+        - mementoList: List<Memento>
+        - final game: Game
+        - firstPrevious: int
+
+        Registry(Game game)
+        reset(): void
+        registry(): void
+        undo(): void
+        redo(): void
+        undoable(): boolean
+        redoable(): boolean
+    }
+    Registry *--> Memento
+    Registry *--> Game
+
+    class mastermind.models.Result{
+        - blacks: int
+        - whites: int
+        + Result(int, int)
+        isWinner(): boolean
+        + getBlacks(): int
+        + getWhites(): int
+    }
+    Result .down.> Combination
+
+    class SecretCombination extends Combination{
+        SecretCombination()
+        getResult(ProposedCombination): Result
+    }
+    SecretCombination .down.> Result
+    SecretCombination .down.> ProposedCombination
+    SecretCombination .down.> Color
+
+    interface Session {
+        + getValueState(): StateValue
+    }
+    Session ..> StateValue
+
+    class SessionImplementation implements Session{
+        - final state: State
+        - final game: Game
+        - final registry: Registry
+
+        + SessionImplementation()
+        +next(): void
+        +getValueState(): StateValue
+        +undoable(): boolean
+        +redoable(): boolean
+        +undo(): void
+        +redo(): void
+        +addProposedCombination(ProposedCombination): void
+        +getAttempts(): int
+        +getProposedCombination(int): ProposedCombination
+        +getResult(int): Result
+        +isWinner(): boolean
+        +isLooser(): boolean
+        +reset(): void
+    }
+    SessionImplementation *--> State
+    SessionImplementation *--> Game
+    SessionImplementation *--> Registry
+    SessionImplementation ..> StateValue
+    SessionImplementation ..> ProposedCombination
+    SessionImplementation ..> Result
+
+    class mastermind.models.State {
+        - stateValue: StateValue
+        + State()
+        + reset(): void
+        + next(): void
+        + getValueState():StateValue
+    }
+    State *-down-> StateValue
+
+    enum mastermind.models.StateValue {
+        + {static} INITIAL: StateValue
+        + {static} IN_GAME: StateValue
+        + {static} RESUME: StateValue
+        + {static} EXIT: StateValue
+    }
+
+    class  SecretCombination extends Combination{
+        SecretCombination()
+        getResult(ProposedCombination): Result
+    }
+    SecretCombination .down.> Result
+    SecretCombination .down.> ProposedCombination
+    SecretCombination .down.> Color
+
 }
-
-class  mastermind.models.Game{
-- {static} final MAX_LONG: int
-- secretCombination: SecretCombination
-- proposedCombinations: List<ProposedCombination>
-- results: List<Result>
-- attempts: int
-+ Game()
-+ clear(): void
-+ addProposedCombination(ProposedCombination proposedCombination): void
-+ isLooser(): boolean
-+ isWinner(): boolean
-+ getAttempts(): int
-+ getProposedCombination(int position): ProposedCombination
-+ getResult(int position): Result
-+ createMemento(): GameMemento
-+ set(GameMemento memento): void
-}
-mastermind.models.Game *-down-> mastermind.models.SecretCombination
-mastermind.models.Game *-down-> mastermind.models.Result
-mastermind.models.Game *-down-> mastermind.models.ProposedCombination
-mastermind.models.Game .down.> mastermind.models.GameMemento
-
-class  mastermind.models.ProposedCombination extends mastermind.models.Combination {
-contains(Color color, int position): boolean
-contains(Color color): boolean
-+ getColors(): List<Color>
-}
-
-mastermind.models.ProposedCombination .down.> mastermind.models.Color
-
-class mastermind.models.Result{
-- blacks: int
-- whites: int
-Result(int, int)
-isWinner(): boolean
-+ getBlacks(): int
-+ getWhites(): int
-}
-
-mastermind.models.Result .down.> mastermind.models.Combination
-
-class  mastermind.models.SecretCombination extends mastermind.models.Combination{
-SecretCombination()
-getResult(ProposedCombination): Result
-}
-
-mastermind.models.SecretCombination .down.> mastermind.models.Result
-mastermind.models.SecretCombination .down.> mastermind.models.ProposedCombination
-mastermind.models.SecretCombination .down.> mastermind.models.Color
-
-abstract class mastermind.models.Combination{
-- {static} WIDTH: int
-# colors: List<Color>
-# Combination()
-+ {static} getWidth(): int
-}
-mastermind.models.Combination *-down-> mastermind.models.Color
-
-class mastermind.models.State {
-- stateValue: StateValue
-+ State()
-+ reset(): void
-+ next(): void
-+ getValueState():StateValue
-}
-
-mastermind.models.State *-down-> mastermind.models.StateValue
-
-enum mastermind.models.StateValue {
-+ {static} INITIAL: StateValue
-+ {static} IN_GAME: StateValue
-+ {static} RESUME: StateValue
-+ {static} EXIT: StateValue
-}
-
-enum mastermind.models.Error{
-+ {static} DUPLICATED: Error
-+ {static} WRONG_CHARACTERS: Error
-+ {static} WRONG_LENGTH: Error
-}
-
-class mastermind.models.GameMemento {
-
-- final proposedCombinations: List<ProposedCombination>
-- final results: List<Result>
-- final attempts: int
-
-+ GameMemento(List<ProposedCombination> proposedCombinations, List<Result> results, int attempts)
-+ getProposedCombinations(): List<ProposedCombination>
-+ getResults(): List<Result>
-+ getAttempts(): int
-}
-
-mastermind.models.GameMemento .down.> mastermind.models.ProposedCombination
-mastermind.models.GameMemento .down.> mastermind.models.Result
-
-class mastermind.models.GameRegistry {
-
-- mementoList: List<GameMemento>
-- final game: Game
-- firstPrevious: int
-
-GameRegistry(Game game)
-reset(): void
-registry(): void
-undo(): void
-redo(): void
-undoable(): boolean
-redoable(): boolean
-}
-
-mastermind.models.GameRegistry *-down-> mastermind.models.GameMemento
-mastermind.models.GameRegistry *-down-> mastermind.models.Game
-
-class mastermind.models.Session {
-
-- final state: State
-- final game: Game
-- final registry: GameRegistry
-
-+ Session()
-+ next(): void
-+ getValueState(): StateValue
-+ undoable(): boolean
-+ redoable(): boolean
-+ undo(): void
-+ redo(): void
-+ addProposedCombination(ProposedCombination proposedCombination): void
-+ getAttempts(): int
-+ getProposedCombination(int position): ProposedCombination
-+ getResult(int position): Result
-+ isWinner(): boolean
-+ isLooser(): boolean
-+ reset(): void
-}
-
-mastermind.models.Session *-down-> mastermind.models.State
-mastermind.models.Session *-down-> mastermind.models.Game
-mastermind.models.Session *-down-> mastermind.models.GameRegistry
-mastermind.models.Session .down.> mastermind.models.StateValue
-mastermind.models.Session .down.> mastermind.models.ProposedCombination
-mastermind.models.Session .down.> mastermind.models.Result
 ....
 
 === Paquete _mastermind.controllers_
 
 [plantuml,paqueteMastermindController,svg]
 ....
+namespace amartinm.mastermind.controllers {
+    abstract class AcceptorController {
+        AcceptorController(Session session)
+        {abstract} +accept(ControllerVisitor): void
+    }
+    Controller <|-- AcceptorController
+    AcceptorController *--> amartinm.mastermind.models.Session
+    AcceptorController ..> ControllerVisitor
+    AcceptorController <|-- StartController
+    AcceptorController <|-- ResumeController
+    AcceptorController <|-- PlayController
 
-interface mastermind.controllers.ControllerVisitor {
-+ visit(StartController startController): void
-+ visit(PlayController playController): void
-+ visit(ResumeController resumeController): void
+    abstract class Controller {
+        #final session: Session
+        Controller(Session session)
+        +getValueState(): StateValue
+    }
+    Controller *--> amartinm.mastermind.models.Session
+    Controller ..> amartinm.mastermind.models.StateValue
+    Controller <|-- RedoController
+    Controller <|-- ProposalController
+    Controller <|-- UndoController
+
+    interface ControllerVisitor {
+        {abstract} +visit(StartController): void
+        {abstract} +visit(PlayController): void
+        {abstract} +visit(ResumeController): void
+    }
+    ControllerVisitor ..> StartController
+    ControllerVisitor ..> ResumeController
+    ControllerVisitor ..> PlayController
+
+    class Logic {
+        #session: Session
+        #acceptorControllers: Map<StateValue, AcceptorController>
+        + getController(): AcceptorController
+    }
+    Logic *--> amartinm.mastermind.models.Session
+    Logic *--> amartinm.mastermind.models.StateValue
+    Logic *--> AcceptorController
+
+    abstract class PlayController {
+        +PlayController(Session)
+        +accept(ControllerVisitor): void
+        {abstract} +isCombinationValid(String): Error
+        {abstract} +addProposedCombination(ProposedCombination): void
+        {abstract} +getAttempts(): int
+        {abstract} +getProposedCombination(int): ProposedCombination
+        {abstract} +getResult(int): Result
+        {abstract} +isWinner(): boolean
+        {abstract} +isLooser(): boolean
+        {abstract} +undo(): void
+        {abstract} +undoable(): boolean
+        {abstract} +redo(): void
+        {abstract} +redoable(): boolean
+    }
+    PlayController *--> amartinm.mastermind.models.Session
+    PlayController ..> amartinm.mastermind.models.Error
+    PlayController ..> amartinm.mastermind.models.ProposedCombination
+    PlayController ..> amartinm.mastermind.models.Result
+    PlayController ..> ControllerVisitor
+
+    class ProposalController {
+        -sessionImplementation: SessionImplementation
+        +ProposalController(Session)
+        +addProposedCombination(ProposedCombination): void
+        +getAttempts(): int
+        +getProposedCombination(int): ProposedCombination
+        +getResult(int): Result
+        +isWinner(): boolean
+        +isLooser(): boolean
+        +isCombinationValid(String): Error
+    }
+    ProposalController *--> amartinm.mastermind.models.SessionImplementation
+    ProposalController ..> amartinm.mastermind.models.ProposedCombination
+    ProposalController ..> amartinm.mastermind.models.Result
+    ProposalController ..> amartinm.mastermind.models.Error
+    ProposalController ..> amartinm.mastermind.models.Combination
+    ProposalController ..> amartinm.mastermind.models.Color
+
+    class RedoController {
+        -sessionImplementation: SessionImplementation
+        +RedoController(Session)
+        +redo(): void
+        +redoable(): boolean
+    }
+    RedoController *--> amartinm.mastermind.models.SessionImplementation
+
+    abstract class ResumeController {
+        +ResumeController(Session)
+        +accept(ControllerVisitor): void
+        {abstract} +resume(boolean): void
+    }
+    ResumeController *--> amartinm.mastermind.models.Session
+    ResumeController ..> ControllerVisitor
+
+    abstract class StartController {
+        +StartController(Session)
+        +accept(ControllerVisitor): void
+        {abstract} +start(): void
+    }
+    StartController *--> amartinm.mastermind.models.Session
+    StartController ..> ControllerVisitor
+
+    class UndoController {
+        -sessionImplementation: SessionImplementation
+        +UndoController(Session)
+        +undo(): void
+        +undoable(): boolean
+    }
+    UndoController *--> amartinm.mastermind.models.SessionImplementation
 }
 
-mastermind.controllers.ControllerVisitor .down.> mastermind.controllers.StartController
-mastermind.controllers.ControllerVisitor .down.> mastermind.controllers.PlayController
-mastermind.controllers.ControllerVisitor .down.> mastermind.controllers.ResumeController
+....
 
-class mastermind.controllers.Logic {
-- final session: Session
-- final controllers: Map<StateValue, AcceptorController>
-+ Logic()
-+ getController(): UseCaseController
+=== Paquete _mastermind.controllers.implementation_
+
+[plantuml,mastermindControllersImplementation,svg]
+....
+
+namespace amartinm.mastermind.controllers.implementation {
+
+    amartinm.mastermind.controllers.ResumeController <|-- ResumeControllerImplementation
+    amartinm.mastermind.controllers.StartController <|-- StartControllerImplementation
+    amartinm.mastermind.controllers.PlayController <|-- PlayControllerImplementation
+
+    class amartinm.mastermind.controllers.Logic
+    amartinm.mastermind.controllers.Logic <|-- LogicImplementation
+
+    class LogicImplementation {
+        # startControllerImplementation: StartControllerImplementation
+        # playControllerImplementation: PlayControllerImplementation
+        # resumeControllerImplementation: ResumeControllerImplementation
+
+        + LogicImplementation()
+    }
+    LogicImplementation *--> StartControllerImplementation
+    LogicImplementation *--> PlayControllerImplementation
+    LogicImplementation *--> ResumeControllerImplementation
+    LogicImplementation ..> amartinm.mastermind.models.SessionImplementation
+    LogicImplementation ..> amartinm.mastermind.models.StateValue
+
+    class PlayControllerImplementation {
+        -proposalController: ProposalController
+        -undoController: UndoController
+        -redoController: RedoController
+        +PlayControllerImplementation(Session)
+        +isCombinationValid(String): Error
+        +addProposedCombination(ProposedCombination): void
+        +getAttempts(): int
+        +getProposedCombination(int): ProposedCombination
+        +getResult(int): Result
+        +isWinner(): boolean
+        +isLooser(): boolean
+        +undo(): void
+        +undoable(): boolean
+        +redo(): void
+        +redoable(): boolean
+    }
+    PlayControllerImplementation *--> ProposalController
+    PlayControllerImplementation *--> UndoController
+    PlayControllerImplementation *--> RedoController
+    PlayControllerImplementation ..> amartinm.mastermind.models.Error
+    PlayControllerImplementation ..> amartinm.mastermind.models.ProposedCombination
+    PlayControllerImplementation ..> amartinm.mastermind.models.Result
+    PlayControllerImplementation ..> amartinm.mastermind.models.Session
+
+    class ResumeControllerImplementation {
+        -sessionImplementation: SessionImplementation
+        +ResumeControllerImplementation(Session)
+        +resume(boolean): void
+    }
+    ResumeControllerImplementation *--> amartinm.mastermind.models.SessionImplementation
+
+    class StartControllerImplementation {
+        ~sessionImplementation: SessionImplementation
+        +StartControllerImplementation(Session)
+        +start(): void
+    }
+    StartControllerImplementation *--> amartinm.mastermind.models.SessionImplementation
+}
+....
+
+=== Paquete _mastermind.distributed_
+
+[plantuml,mastermindDistributed,svg]
+....
+
+namespace amartinm.mastermind.distributed {
+    amartinm.mastermind.controllers.implementation.LogicImplementation <|-- LogicImplementationServer
+    class LogicImplementationServer {
+        +createDispatchers(DispatcherPrototype): void
+    }
+    LogicImplementationServer ..> amartinm.mastermind.distributed.dispatchers.FrameType
+    LogicImplementationServer ..> StartDispatcher
+    LogicImplementationServer ..> StateDispatcher
+    LogicImplementationServer ..> UndoDispatcher
+    LogicImplementationServer ..> RedoDispatcher
+    LogicImplementationServer ..> UndoableDispatcher
+    LogicImplementationServer ..> RedoableDispatcher
+    LogicImplementationServer ..> CombinationValidDispatcher
+    LogicImplementationServer ..> AddProposalDispatcher
+    LogicImplementationServer ..> GetAttemptsDispatcher
+    LogicImplementationServer ..> GetProposalDispatcher
+    LogicImplementationServer ..> GetResultDispatcher
+    LogicImplementationServer ..> IsWinnerDispatcher
+    LogicImplementationServer ..> IsLooserDispatcher
+    LogicImplementationServer ..> ResumeDispatcher
+
+    amartinm.mastermind.controllers.Logic <|-- LogicProxy
+    class LogicProxy {
+        -tcpip: TCPIP
+        + LogicProxy()
+        +close(): void
+    }
+    LogicProxy *--> amartinm.mastermind.distributed.dispatchers.TCPIP
+    LogicProxy ..> amartinm.mastermind.models.StateValue
+    LogicProxy ..> StartControllerProxy
+    LogicProxy ..> PlayControllerProxy
+    LogicProxy ..> ResumeControllerProxy
+
+    amartinm.mastermind.Mastermind <|-- MastermindClient
+    class MastermindClient {
+        - logicProxy: LogicProxy
+        #createLogic(): Logic
+        #play(): void
+        {static} +main(String[]): void
+    }
+    MastermindClient *--> LogicProxy
+
+    class MastermindServer {
+        - dispatcherPrototype: DispatcherPrototype
+        - MastermindServer()
+        - serve(): void
+        {static} +main(String[]): void
+    }
+    MastermindServer *--> amartinm.mastermind.distributed.dispatchers.DispatcherPrototype
+    MastermindServer ..> LogicImplementationServer
+
+    amartinm.mastermind.controllers.PlayController <|-- PlayControllerProxy
+    class PlayControllerProxy {
+        -tcpip: TCPIP
+        +isCombinationValid(String): Error
+        +addProposedCombination(ProposedCombination): void
+        +getAttempts(): int
+        +getProposedCombination(int): ProposedCombination
+        +getResult(int): Result
+        +isWinner(): boolean
+        +isLooser(): boolean
+        +undo(): void
+        +undoable(): boolean
+        +redo(): void
+        +redoable(): boolean
+    }
+    PlayControllerProxy *--> amartinm.mastermind.distributed.dispatchers.TCPIP
+    PlayControllerProxy *--> amartinm.mastermind.models.Session
+    PlayControllerProxy .down.> amartinm.mastermind.distributed.dispatchers.FrameType
+    PlayControllerProxy .down.> amartinm.mastermind.models.Error
+    PlayControllerProxy .down.> amartinm.mastermind.models.ProposedCombination
+    PlayControllerProxy .down.> amartinm.mastermind.models.Result
+
+    amartinm.mastermind.controllers.ResumeController <|-- ResumeControllerProxy
+    class ResumeControllerProxy {
+        -tcpip: TCPIP
+        +ResumeControllerProxy(Session, TCPIP)
+        +resume(boolean): void
+    }
+    ResumeControllerProxy *--> amartinm.mastermind.distributed.dispatchers.TCPIP
+    ResumeControllerProxy *--> amartinm.mastermind.models.Session
+    ResumeControllerProxy .down.> amartinm.mastermind.distributed.dispatchers.FrameType
+
+    amartinm.mastermind.models.Session <|.. SessionProxy
+    class SessionProxy {
+        -tcpip: TCPIP
+        +SessionProxy(TCPIP)
+        +getValueState(): StateValue
+    }
+    SessionProxy *--> amartinm.utils.TCPIP
+    SessionProxy ..> amartinm.mastermind.distributed.dispatchers.FrameType
+    SessionProxy ..> amartinm.mastermind.models.StateValue
+
+    amartinm.mastermind.controllers.StartController <|-- StartControllerProxy
+    class StartControllerProxy {
+        -tcpip: TCPIP
+        +StartControllerProxy(Session, TCPIP)
+        +start(): void
+    }
+    StartControllerProxy *--> amartinm.utils.TCPIP
+    StartControllerProxy *--> amartinm.mastermind.models.Session
+    StartControllerProxy ..> amartinm.mastermind.distributed.dispatchers.FrameType
 }
 
-mastermind.controllers.Logic *-up-> mastermind.models.Session
-mastermind.controllers.Logic *-up-> mastermind.models.StateValue
-mastermind.controllers.Logic *-down-> mastermind.controllers.AcceptorController
+....
 
-abstract class mastermind.controllers.UseCaseController {
-# final session: Session
-# final state: State
-UseCaseController(Session session)
-+ next(): void
+=== Paquete _mastermind.distributed.dispatchers_
+
+[plantuml,mastermindDistributedDispatchers,svg]
+....
+
+namespace amartinm.mastermind.distributed.dispatchers {
+
+    class AddProposalDispatcher [[AddProposalDispatcher.html]] {
+        +AddProposalDispatcher(PlayController)
+        +dispatch(): void
+    }
+    AddProposalDispatcher .down.> amartinm.mastermind.controllers.PlayController
+    AddProposalDispatcher .down.> amartinm.mastermind.models.ProposedCombination
+
+    class CombinationValidDispatcher [[CombinationValidDispatcher.html]] {
+        +CombinationValidDispatcher(PlayController)
+        +dispatch(): void
+    }
+    CombinationValidDispatcher ..> amartinm.mastermind.controllers.PlayController
+    CombinationValidDispatcher ..> amartinm.mastermind.models.Error
+
+    abstract class Dispatcher [[Dispatcher.html]] {
+        #acceptorController: AcceptorController
+        #tcpip: TCPIP
+        +Dispatcher(AcceptorController)
+        +associate(TCPIP): void
+        {abstract} +dispatch(): void
+    }
+    Dispatcher *--> amartinm.mastermind.controllers.AcceptorController
+    Dispatcher *--> TCPIP
+    Dispatcher <|-down- GetAttemptsDispatcher
+    Dispatcher <|-down- ResumeDispatcher
+    Dispatcher <|-down- CombinationValidDispatcher
+    Dispatcher <|-down- GetResultDispatcher
+    Dispatcher <|-down- StateDispatcher
+    Dispatcher <|-down- StartDispatcher
+    Dispatcher <|-down- AddProposalDispatcher
+    Dispatcher <|-down- IsWinnerDispatcher
+    Dispatcher <|-down- IsLooserDispatcher
+    Dispatcher <|-down- GetProposalDispatcher
+
+    class DispatcherPrototype [[DispatcherPrototype.html]] {
+        - final tcpip: TCPIP
+        -dispatcherMap: Map<FrameType, Dispatcher>
+        +add(FrameType, Dispatcher): void
+        +dispatch(FrameType): void
+        +serve(): void
+    }
+    DispatcherPrototype *--> FrameType
+    DispatcherPrototype *--> Dispatcher
+    DispatcherPrototype --> TCPIP
+
+    enum FrameType [[FrameType.html]] {
+        {static} +START
+        {static} +STATE
+        {static} +UNDO
+        {static} +REDO
+        {static} +UNDOABLE
+        {static} +REDOABLE
+        {static} +COMBINATION_VALID
+        {static} +ADD_PROPOSAL
+        {static} +GET_ATTEMPTS
+        {static} +GET_PROPOSAL
+        {static} +GET_RESULT
+        {static} +WINNER
+        {static} +LOOSER
+        {static} +NEW_GAME
+        {static} +CLOSE
+        {static} +parser(String): FrameType
+    }
+
+    class GetAttemptsDispatcher [[GetAttemptsDispatcher.html]] {
+        +GetAttemptsDispatcher(PlayController)
+        +dispatch(): void
+    }
+    GetAttemptsDispatcher .down.> amartinm.mastermind.controllers.PlayController
+
+    class GetProposalDispatcher [[GetProposalDispatcher.html]] {
+        +GetProposalDispatcher(PlayController)
+        +dispatch(): void
+    }
+    GetProposalDispatcher .down.> amartinm.mastermind.controllers.PlayController
+
+    class GetResultDispatcher [[GetResultDispatcher.html]] {
+        +GetResultDispatcher(PlayController)
+        +dispatch(): void
+    }
+    GetResultDispatcher .down.> amartinm.mastermind.controllers.PlayController
+    GetResultDispatcher .down.> amartinm.mastermind.models.Result
+
+    class IsLooserDispatcher [[IsLooserDispatcher.html]] {
+        +IsLooserDispatcher(PlayController)
+        +dispatch(): void
+    }
+    IsLooserDispatcher .down.> amartinm.mastermind.controllers.PlayController
+
+    class IsWinnerDispatcher [[IsWinnerDispatcher.html]] {
+        +IsWinnerDispatcher(PlayController)
+        +dispatch(): void
+    }
+    IsWinnerDispatcher .down.> amartinm.mastermind.controllers.PlayController
+
+    class ResumeDispatcher [[ResumeDispatcher.html]] {
+        +ResumeDispatcher(ResumeController)
+        +dispatch(): void
+    }
+    ResumeDispatcher .down.> amartinm.mastermind.controllers.ResumeController
+
+    class StartDispatcher [[StartDispatcher.html]] {
+        +StartDispatcher(StartController)
+        +dispatch(): void
+    }
+    StartDispatcher .down.> amartinm.mastermind.controllers.StartController
+
+    class StateDispatcher [[StateDispatcher.html]] {
+        +StateDispatcher(PlayController)
+        +dispatch(): void
+    }
+    StateDispatcher .down.> amartinm.mastermind.controllers.PlayController
+
+    class TCPIP [[TCPIP.html]] {
+        +TCPIP(Socket)
+        +TCPIP(ServerSocket, Socket)
+        {static} +createClientSocket(): TCPIP
+        {static} +createServerSocket(): TCPIP
+        +receiveError(): Error
+        +receiveResult(): Result
+        +receiveProposedCombination(): ProposedCombination
+        +close(): void
+    }
+    amartinm.utils.TCPIP <|-- TCPIP
+    TCPIP .down.> amartinm.mastermind.models.Color
+    TCPIP .down.> amartinm.mastermind.models.Error
+    TCPIP .down.> amartinm.mastermind.models.ProposedCombination
+    TCPIP .down.> amartinm.mastermind.models.Result
 }
+....
 
-mastermind.controllers.UseCaseController *-up-> mastermind.models.Session
-mastermind.controllers.UseCaseController .down.> mastermind.controllers.ControllerVisitor
+=== Paquete _mastermind.distributed.dispatchers.undoredo_
 
-class mastermind.controllers.PlayController extends mastermind.controllers.UseCaseController implements mastermind.controllers.AcceptorController{
-- final proposalController: ProposalController
-- final undoController: UndoController
-- final redoController: RedoController
+[plantuml,mastermindDistributedDispatchersUndoRedo,svg]
+....
 
-+ PlayController(Session)
-+ addProposedCombination(ProposedCombination proposedCombination): void
-+ getAttempts(): int
-+ getProposedCombination(int position): ProposedCombination
-+ getResult(int position): Result
-+ isWinner(): boolean
-+ isLooser(): boolean
-+ undo(): void
-+ undoable(): boolean
-+ redo(): void
-+ redoable(): boolean
-+ accept(ControllerVisitor controllerVisitor): void
-}
+namespace amartinm.mastermind.distributed.dispatchers.undoredo {
 
-mastermind.controllers.PlayController .up.> mastermind.controllers.ControllerVisitor
-mastermind.controllers.PlayController .down.> mastermind.models.ProposedCombination
-mastermind.controllers.PlayController .down.> mastermind.models.Result
+    class RedoableDispatcher [[RedoableDispatcher.html]] {
+        +RedoableDispatcher(PlayController)
+        +dispatch(): void
+    }
+    RedoableDispatcher .down.> amartinm.mastermind.controllers.PlayController
 
-class mastermind.controllers.ResumeController extends mastermind.controllers.UseCaseController implements mastermind.controllers.AcceptorController {
-+ ResumeController(Session session)
-+ resume(boolean isResumed): void
-+ accept(ControllerVisitor controllerVisitor): void
-}
+    class RedoDispatcher [[RedoDispatcher.html]] {
+        +RedoDispatcher(PlayController)
+        +dispatch(): void
+    }
+    RedoDispatcher .down.> amartinm.mastermind.controllers.PlayController
 
-mastermind.controllers.ResumeController .up.> mastermind.controllers.ControllerVisitor
+    class UndoDispatcher [[UndoDispatcher.html]] {
+        +UndoDispatcher(PlayController)
+        +dispatch(): void
+    }
+    UndoDispatcher .down.> amartinm.mastermind.controllers.PlayController
 
-class mastermind.controllers.StartController extends mastermind.controllers.UseCaseController implements mastermind.controllers.AcceptorController {
-+StartController(Session session)
-+ accept(ControllerVisitor controllerVisitor): void
-}
+    class UndoableDispatcher [[UndoableDispatcher.html]] {
+        +UndoableDispatcher(PlayController)
+        +dispatch(): void
+    }
+    UndoableDispatcher .down.> amartinm.mastermind.controllers.PlayController
 
-mastermind.controllers.StartController .up.> mastermind.controllers.ControllerVisitor
+    abstract class amartinm.mastermind.distributed.dispatchers.Dispatcher {
+        {abstract} +dispatch(): void
+    }
+    amartinm.mastermind.distributed.dispatchers.Dispatcher <|-- RedoableDispatcher
+    amartinm.mastermind.distributed.dispatchers.Dispatcher <|-- RedoDispatcher
+    amartinm.mastermind.distributed.dispatchers.Dispatcher <|-- UndoDispatcher
+    amartinm.mastermind.distributed.dispatchers.Dispatcher <|-- UndoableDispatcher
 
-interface mastermind.controllers.AcceptorController {
-+ accept(ControllerVisitor controllerVisitor): void
-+ next(): void
-}
-
-mastermind.controllers.AcceptorController .down.> mastermind.controllers.ControllerVisitor
-
-class mastermind.controllers.ProposalController extends mastermind.controllers.UseCaseController {
-+ ProposalController(Session session)
-+ addProposedCombination(ProposedCombination proposedCombination): void
-+ getAttempts(): int
-+ getProposedCombination(int position): ProposedCombination
-+ getResult(int position): Result
-+ isWinner(): boolean
-+ isLooser(): boolean
-}
-
-mastermind.controllers.ProposalController .down.> mastermind.models.ProposedCombination
-mastermind.controllers.ProposalController .down.> mastermind.models.Result
-
-class mastermind.controllers.RedoController extends mastermind.controllers.UseCaseController {
-RedoController(Session session)
-+ redo(): void
-+ redoable(): boolean
-}
-
-class mastermind.controllers.UndoController extends mastermind.controllers.UseCaseController {
-UndoController(Session session)
-undo(): void
-undoable(): boolean
 }
 ....
 
@@ -630,6 +977,22 @@ class utils.ClosedInterval {
 + isIncluded(int value): boolean
 + toString(): String
 }
+
+class utils.TCPIP {
+    -socket: Socket
+    -serverSocket: ServerSocket
+    -out: PrintWriter
+    -in: BufferedReader
+    +TCPIP(Socket)
+    +TCPIP(ServerSocket, Socket)
+    +send(String): void
+    +send(int): void
+    +send(boolean): void
+    +receiveLine(): String
+    +receiveBoolean(): boolean
+    +receiveInt(): int
+    +close(): void
+}
 ....
 
 == Calidad del Software
@@ -659,15 +1022,19 @@ package "  "  as mastermind {
 }
 package "  "  as mastermind.controllers {
 }
+package "  "  as mastermind.controllers.implementation {
+}
+package "  "  as mastermind.distributed {
+}
+package "  "  as mastermind.distributed.dispatchers {
+}
+package "  "  as mastermind.distributed.dispatchers.undoredo {
+}
 package "  "  as mastermind.models {
 }
 package "  "  as mastermind.views {
 }
-package "  "  as mastermind.views.console {
-}
-package "  "  as mastermind.views.graphics {
-}
-package "  "  as mastermind.utils {
+package "  "  as utils {
 }
 package "  "  as java.io {
 }
@@ -678,11 +1045,13 @@ package "  "  as java.util {
 
 jar *--> mastermind
 jar *--> mastermind.controllers
+jar *--> mastermind.distributed
 jar *--> mastermind.models
 jar *--> mastermind.views
-mastermind.views *--> mastermind.views.console
-mastermind.views *--> mastermind.views.graphics
-jar *--> mastermind.utils
+mastermind.controllers *--> mastermind.controllers.implementation
+mastermind.distributed *--> mastermind.distributed.dispatchers
+mastermind.distributed.dispatchers *--> mastermind.distributed.dispatchers.undoredo
+jar *--> utils
 jar *--> java.io
 jar *--> java.util
 ....
