@@ -2,11 +2,12 @@ package amartinm.mastermind.controllers;
 
 import amartinm.mastermind.models.Game;
 import amartinm.mastermind.models.State;
-import amartinm.mastermind.views.console.ResumeView;
 
 import java.util.Map;
 
 public abstract class ResumeController extends UseCaseController {
+
+    private static final String NEW_GAME = "newGame";
 
     public ResumeController(Game game, State state) {
         super(game, state);
@@ -19,7 +20,7 @@ public abstract class ResumeController extends UseCaseController {
 
     public void execute() {
         Map<String, Object> viewData = this.view.interact(null);
-        boolean newGame = (boolean) viewData.get(ResumeView.NEW_GAME);
+        boolean newGame = (boolean) viewData.get(NEW_GAME);
         if (newGame) {
             this.resume();
         } else {

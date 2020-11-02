@@ -34,4 +34,4 @@ target
 # gradle generated files
 docs/.gradle
 docs/build/tmp
-
+docs/src/docs/apidocs

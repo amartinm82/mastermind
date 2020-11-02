@@ -10,11 +10,11 @@ import java.util.Map;
 
 public class PlayView extends WithConsoleView implements View {
 
-    public static final String ATTEMPTS = "attempts";
-    public static final String PROPOSED_COMBINATIONS = "proposedCombinations";
-    public static final String RESULTS = "results";
-    public static final String IS_WINNER = "isWinner";
-    public static final String IS_LOOSER = "isLooser";
+    private static final String ATTEMPTS = "attempts";
+    private static final String PROPOSED_COMBINATIONS = "proposedCombinations";
+    private static final String RESULTS = "results";
+    private static final String IS_WINNER = "isWinner";
+    private static final String IS_LOOSER = "isLooser";
 
     private final SecretCombinationView secretCombinationView;
 

@@ -2,12 +2,17 @@ package amartinm.mastermind.controllers;
 
 import amartinm.mastermind.models.Game;
 import amartinm.mastermind.models.State;
-import amartinm.mastermind.views.console.PlayView;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public abstract class PlayController extends UseCaseController {
+
+    private static final String ATTEMPTS = "attempts";
+    private static final String PROPOSED_COMBINATIONS = "proposedCombinations";
+    private static final String RESULTS = "results";
+    private static final String IS_WINNER = "isWinner";
+    private static final String IS_LOOSER = "isLooser";
 
     protected final AddProposalController addProposalController;
 
@@ -23,11 +28,11 @@ public abstract class PlayController extends UseCaseController {
         this.addProposalController.execute();
 
         Map<String, Object> model = new HashMap<>();
-        model.put(PlayView.ATTEMPTS, this.game.getAttempts());
-        model.put(PlayView.PROPOSED_COMBINATIONS, this.game.getProposedCombinations());
-        model.put(PlayView.RESULTS, this.game.getResults());
-        model.put(PlayView.IS_WINNER, this.game.isWinner());
-        model.put(PlayView.IS_LOOSER, this.game.isLooser());
+        model.put(ATTEMPTS, this.game.getAttempts());
+        model.put(PROPOSED_COMBINATIONS, this.game.getProposedCombinations());
+        model.put(RESULTS, this.game.getResults());
+        model.put(IS_WINNER, this.game.isWinner());
+        model.put(IS_LOOSER, this.game.isLooser());
         this.view.interact(model);
 
         if (this.game.isWinner() || this.game.isLooser()) {

@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class ResumeView implements View {
 
-    public static final String NEW_GAME = "newGame";
+    private static final String NEW_GAME = "newGame";
 
     public Map<String, Object> interact(Map<String, Object> model) {
         MessageView.RESUME.write();

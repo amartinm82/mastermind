@@ -1,4 +1,4 @@
-= Master Mind. Solución 8.2. *mvp.pm.withDoubleDispatching*
+= Master Mind. Solución 16.1. *mvp.pv*
 Álvaro Martín Martín <amartinm82@gmail.com>
 :toc-title: Índice
 :toc: left
@@ -28,7 +28,7 @@ image::Dibujo.jpg[]
 
 == Vista de Lógica/Diseño
 
-- Arquitectura Documento/Vista mediante *Patrón de Vista Separada*
+- Arquitectura Documento/Vista mediante *Patrón de Vista Pasiva*
 
 === Arquitectura 
 
@@ -37,11 +37,13 @@ image::Dibujo.jpg[]
 
 package mastermind #DDDDDD { } 
 mastermind .down.> mastermind.controllers
-mastermind .down.> mastermind.models
-mastermind .down.> mastermind.views
 
-package mastermind.controllers #DDDDDD { }
+package mastermind.controllers #DDDDDD {
+    package mastermind.controllers.console {}
+    package mastermind.controllers.graphics {}
+}
 mastermind.controllers .down.> mastermind.models
+mastermind.controllers .down.> mastermind.views
 
 package mastermind.models #DDDDDD { } 
 package java.util{ }
@@ -55,7 +57,6 @@ package mastermind.views #DDDDDD {
     package mastermind.views.console {}
     package mastermind.views.graphics {}
 }
-mastermind.views .down.> mastermind.controllers
 mastermind.views.console .down.> mastermind.utils
 
 ....
@@ -66,101 +67,228 @@ mastermind.views.console .down.> mastermind.utils
 
 ....
 
-abstract class  mastermind.Mastermind{
-- final logic: Logic
-- final view: View
-# Mastermind()
-# {abstract} createView(): View
-# play(): void
+abstract class mastermind.Mastermind [[Mastermind.html]] {
+    #logic: Logic
+    #play(): void
+    {abstract} #createLogic(): Logic
 }
 
-class mastermind.ConsoleMastermind extends mastermind.Mastermind{
-# createView(): View
-+ {static} main(String[] args): void
+class mastermind.ConsoleMastermind [[ConsoleMastermind.html]] {
+    #createLogic(): Logic
+    {static} +main(String[]): void
 }
 
-class mastermind.GraphicsMastermind extends mastermind.Mastermind{
-# createView(): View
-+ {static} main(String[] args): void
+class mastermind.GraphicsMastermind [[GraphicsMastermind.html]] {
+    #createLogic(): Logic
+    {static} +main(String[]): void
 }
 
-mastermind.Mastermind *-down-> mastermind.views.View
-mastermind.Mastermind *-down-> mastermind.controllers.Logic
-mastermind.Mastermind .down.> mastermind.controllers.UseCaseController
+mastermind.Mastermind *--> mastermind.controllers.Logic
 
-mastermind.GraphicsMastermind .down.> mastermind.views.graphics.View
+mastermind.Mastermind ..> mastermind.controllers.UseCaseController
 
-mastermind.ConsoleMastermind .down.> mastermind.views.console.View
+mastermind.Mastermind <|-- mastermind.ConsoleMastermind
 
-mastermind.views.View <|.down.> mastermind.controllers.ControllerVisitor
-mastermind.views.View <|-down-> mastermind.views.console.View
-mastermind.views.View <|-down-> mastermind.views.graphics.View
+mastermind.Mastermind <|-- mastermind.GraphicsMastermind
+
+
+abstract class mastermind.controllers.Logic [[Logic.html]] {
++getController(): UseCaseController
+{abstract} +createStartController(Game, State): StartController
+{abstract} +createPlayController(Game, State): PlayController
+{abstract} +createResumeController(Game, State): ResumeController
+}
+
+abstract class mastermind.controllers.UseCaseController [[UseCaseController.html]] {
+    #game: Game
+    #state: State
+    #view: View
+    +next(): void
+    {abstract} +createView(): View
+    {abstract} +execute(): void
+}
+
 ....
 
-=== Paquete _mastermind.views_ 
+=== Paquete _mastermind.views.graphics_
+
+[plantuml,mastermindViewsGraphics,svg]
+
+....
+
+interface mastermind.views.View [[View.html]] {
+    {abstract} +interact(Map<String, Object>): Map<String, Object>
+}
+
+class mastermind.views.graphics.ResumeView [[ResumeView.html]] {
+    {static} +NEW_GAME: String
+    +interact(Map<String, Object>): Map<String, Object>
+}
+
+class mastermind.views.graphics.StartView [[StartView.html]] {
+    +interact(Map<String, Object>): Map<String, Object>
+}
+
+class mastermind.views.graphics.ProposedCombinationView [[ProposedCombinationView.html]] {
+    {static} +PROPOSED_COMBINATION: String
+    {static} +write(ProposedCombination): void
+    +interact(Map<String, Object>): Map<String, Object>
+}
+
+class mastermind.views.graphics.PlayView [[PlayView.html]] {
+    {static} +RESULTS: String
+    +interact(Map<String, Object>): Map<String, Object>
+}
+
+abstract class utils.WithConsoleView [[WithConsoleView.html]] {
+    #console: Console
+}
+utils.WithConsoleView <|-- mastermind.views.graphics.ResumeView
+
+interface mastermind.views.View {
+    {abstract} +interact(Map<String, Object>): Map<String, Object>
+}
+mastermind.views.View <|.. mastermind.views.graphics.ResumeView
+
+utils.WithConsoleView <|-- mastermind.views.graphics.ResumeView
+
+utils.WithConsoleView <|-- mastermind.views.graphics.StartView
+
+mastermind.views.View <|.. mastermind.views.graphics.StartView
+
+utils.WithConsoleView <|-- mastermind.views.graphics.ProposedCombinationView
+
+mastermind.views.View <|.. mastermind.views.graphics.ProposedCombinationView
+
+utils.WithConsoleView <|-- mastermind.views.graphics.PlayView
+
+mastermind.views.View <|.. mastermind.views.graphics.PlayView
+
+....
+
+=== Paquete _mastermind.views.console_
+
+[plantuml,mastermindViewsConsole,svg]
+
+=== Paquete _mastermind.views.console_
 
 [plantuml,mastermindViews,svg]
 
 ....
-
-
-abstract class mastermind.views.View {
-+ {abstract} interact(UseCaseController controller): void
+abstract class utils.WithConsoleView [[WithConsoleView.html]] {
+    #console: Console
 }
 
-mastermind.views.View .up.> mastermind.controllers.UseCaseController
-
-class mastermind.views.graphics.View {
-+ interact(UseCaseController controller): void
+class utils.YesNoDialog [[YesNoDialog.html]] {
+    +read(String): boolean
+    +read(): boolean
 }
 
-mastermind.views.View <|-left- mastermind.views.graphics.View
-mastermind.views.graphics.View .left.> mastermind.controllers.UseCaseController
-
-class mastermind.views.console.View{
-- final startView: StartView
-- final playView: PlayView
-- final resumeView: ResumeView
-
-+ View()
-+ interact(UseCaseController controller): void
-+ visit(StartController startController): void
-+ visit(PlayController playController): void
-+ visit(ResumeController resumeController): void
+enum mastermind.models.Color{
++ {static} RED: Color
++ {static} BLUE: Color
++ {static} YELLOW: Color
++ {static} GREEN: Color
++ {static} ORANGE: Color
++ {static} PURPLE: Color
+{static} length(): int
 }
-mastermind.views.View <|-right- mastermind.views.console.View
-mastermind.controllers.ControllerVisitor <|.up. mastermind.views.console.View
-mastermind.views.console.View *-down-> mastermind.views.console.StartView
-mastermind.views.console.View *-down-> mastermind.views.console.PlayView
-mastermind.views.console.View *-down-> mastermind.views.console.ResumeView
-mastermind.views.console.View .up.> mastermind.controllers.UseCaseController
+
+class mastermind.views.console.ColorView extends utils.WithConsoleView {
+    - {static} final INITIALS: char[]
+    - final color: Color
+    ColorView(Color color)
+    {static} allInitials(): String
+    {static} getInstance(char character): Color
+    write(): void
+}
+
+mastermind.views.console.ColorView *-down-> mastermind.models.Color
+
+class mastermind.views.console.ErrorView extends utils.WithConsoleView{
+    - {static} final MESSAGES: String[]
+    - final error: Error
+    ErrorView(Error error)
+    writeln(): void
+}
+
+enum mastermind.models.Error{
++ {static} DUPLICATED: Error
++ {static} WRONG_CHARACTERS: Error
++ {static} WRONG_LENGTH: Error
+}
+
+mastermind.views.console.ErrorView *-down-> mastermind.models.Error
 
 enum mastermind.views.console.MessageView{
-+ {static} ATTEMPTS: MessageView
-+ {static} RESUME: MessageView
-+ {static} RESULT: MessageView
-+ {static} PROPOSED_COMBINATION: MessageView
-+ {static} TITLE: MessageView
-+ {static} WINNER: MessageView
-+ {static} LOOSER: MessageView
+    + {static} ATTEMPTS: MessageView
+    + {static} RESUME: MessageView
+    + {static} RESULT: MessageView
+    + {static} PROPOSED_COMBINATION: MessageView
+    + {static} TITLE: MessageView
+    + {static} WINNER: MessageView
+    + {static} LOOSER: MessageView
 
-- final message: String
-- final console: Console
+    - final message: String
+    - final console: Console
 
-- MessageView(String message)
-write(): void
+    - MessageView(String message)
+    write(): void
+    writeln(): void
+    writeln(int attempts): void
+    writeln(int blacks, int whites): void
+}
+
+class mastermind.views.console.PlayView [[PlayView.html]] {
+    {static} +ATTEMPTS: String
+    {static} +PROPOSED_COMBINATIONS: String
+    {static} +RESULTS: String
+    {static} +IS_WINNER: String
+    {static} +IS_LOOSER: String
+    +interact(Map<String, Object>): Map<String, Object>
+}
+
+utils.WithConsoleView <|-- mastermind.views.console.PlayView
+
+mastermind.views.View <|.. mastermind.views.console.PlayView
+
+mastermind.views.console.PlayView *--> mastermind.views.console.SecretCombinationView
+mastermind.views.console.PlayView ..> mastermind.views.console.MessageView
+mastermind.views.console.PlayView ..> mastermind.views.console.ProposedCombinationView
+mastermind.views.console.PlayView ..> mastermind.views.console.ResultView
+mastermind.views.console.PlayView ..> mastermind.models.ProposedCombination
+mastermind.views.console.PlayView ..> mastermind.models.Result
+
+class mastermind.views.console.ProposedCombinationView [[ProposedCombinationView.html]] {
+    {static} +PROPOSED_COMBINATION: String
+    {static} +write(ProposedCombination): void
+    +interact(Map<String, Object>): Map<String, Object>
+}
+
+utils.WithConsoleView <|-- mastermind.views.console.ProposedCombinationView
+mastermind.views.View <|.. mastermind.views.console.ProposedCombinationView
+mastermind.views.console.ProposedCombinationView ..> mastermind.models.ProposedCombination
+mastermind.views.console.ProposedCombinationView ..> mastermind.models.Error
+mastermind.views.console.ProposedCombinationView ..> mastermind.views.console.MessageView
+mastermind.views.console.ProposedCombinationView ..> mastermind.views.console.ColorView
+
+class mastermind.views.console.ResultView extends utils.WithConsoleView {
+- final result: Result
+ResultView(Result result)
 writeln(): void
-writeln(int attempts): void
-writeln(int blacks, int whites): void
 }
 
-class mastermind.views.console.StartView {
-# interact(StartController startController): void
+mastermind.views.console.ResultView *-down-> mastermind.models.Result
+mastermind.views.console.ResultView ..> mastermind.views.console.MessageView
+
+class mastermind.views.console.ResumeView [[ResumeView.html]] {
+    {static} +NEW_GAME: String
+    +interact(Map<String, Object>): Map<String, Object>
 }
 
-mastermind.views.console.StartView .down.> mastermind.controllers.StartController
-mastermind.views.console.StartView .up.> mastermind.views.console.MessageView
-mastermind.views.console.StartView .down.> mastermind.views.console.SecretCombinationView
+mastermind.views.console.ResumeView ..> utils.YesNoDialog
+mastermind.views.console.ResumeView ..> mastermind.views.console.MessageView
+mastermind.views.View <|.. mastermind.views.console.ResumeView
 
 class mastermind.views.console.SecretCombinationView extends utils.WithConsoleView {
 SecretCombinationView()
@@ -170,72 +298,15 @@ writeln(): void
 mastermind.views.console.SecretCombinationView .down.> mastermind.models.SecretCombination
 mastermind.views.console.SecretCombinationView .up.> mastermind.views.console.MessageView
 
-class mastermind.views.console.ResumeView {
-interact(ResumeController resumeController): void
+class mastermind.views.console.StartView [[StartView.html]] {
+    +interact(Map<String, Object>): Map<String, Object>
 }
 
-mastermind.views.console.ResumeView .down.> mastermind.controllers.ResumeController
-mastermind.views.console.ResumeView .down.> utils.YesNoDialog
-mastermind.views.console.ResumeView .up.> mastermind.views.console.MessageView
-
-class mastermind.views.console.ResultView extends utils.WithConsoleView {
-- final result: Result
-ResultView(Result result)
-writeln(): void
-}
-
-mastermind.views.console.ResultView *-down-> mastermind.models.Result
-mastermind.views.console.ResultView .up.> mastermind.views.console.MessageView
-
-class mastermind.views.console.ProposedCombinationView extends utils.WithConsoleView {
-- final proposedCombination: ProposedCombination
-ProposedCombinationView(ProposedCombination proposedCombination)
-write(): void
-read(): void
-}
-
-mastermind.views.console.ProposedCombinationView *-down-> mastermind.models.ProposedCombination
-mastermind.views.console.ProposedCombinationView .down.> mastermind.models.Color
-mastermind.views.console.ProposedCombinationView .down.> mastermind.views.console.ColorView
-mastermind.views.console.ProposedCombinationView .down.> mastermind.models.Error
-mastermind.views.console.ProposedCombinationView .up.> mastermind.views.console.MessageView
-mastermind.views.console.ProposedCombinationView .down.> mastermind.views.console.ErrorView
-
-class mastermind.views.console.PlayView extends utils.WithConsoleView {
-- final secretCombinationView: SecretCombinationView
-PlayView()
-interact(PlayController playController): void
-}
-
-mastermind.views.console.PlayView *-down-> mastermind.views.console.SecretCombinationView
-mastermind.views.console.PlayView .down.> mastermind.controllers.PlayController
-mastermind.views.console.PlayView .down.> mastermind.models.ProposedCombination
-mastermind.views.console.PlayView .down.> mastermind.views.console.ProposedCombinationView
-mastermind.views.console.PlayView .up.> mastermind.views.console.MessageView
-mastermind.views.console.PlayView .down.> mastermind.views.console.ResultView
-
-mastermind.views.console.MessageView *-down-> utils.Console
-
-class mastermind.views.console.ErrorView extends utils.WithConsoleView{
-- {static} final MESSAGES: String[]
-- final error: Error
-ErrorView(Error error)
-writeln(): void
-}
-
-mastermind.views.console.ErrorView *-down-> mastermind.models.Error
-
-class mastermind.views.console.ColorView extends utils.WithConsoleView {
-- {static} final INITIALS: char[]
-- final color: Color
-ColorView(Color color)
-{static} allInitials(): String
-{static} getInstance(char character): Color
-write(): void
-}
-
-mastermind.views.console.ColorView *-down-> mastermind.models.Color
+mastermind.views.View <|.. mastermind.views.console.StartView
+mastermind.views.console.StartView *--> mastermind.views.console.MessageView
+mastermind.views.console.StartView *--> mastermind.views.console.SecretCombinationView
 ....
+
 
 === Paquete _mastermind.models_ 
 
@@ -261,13 +332,13 @@ class  mastermind.models.Game{
 - results: List<Result>
 - attempts: int
 + Game()
++ getProposedCombinations(): List<ProposedCombination>
++ getResults(): List<Result>
++ getAttempts(): int
 + clear(): void
 + addProposedCombination(ProposedCombination proposedCombination): void
 + isLooser(): boolean
 + isWinner(): boolean
-+ getAttempts(): int
-+ getProposedCombination(int position): ProposedCombination
-+ getResult(int position): Result
 }
 mastermind.models.Game *-down-> mastermind.models.SecretCombination
 mastermind.models.Game *-down-> mastermind.models.Result
@@ -340,70 +411,124 @@ enum mastermind.models.Error{
 [plantuml,paqueteMastermindController,svg]
 
 ....
-
-interface mastermind.controllers.ControllerVisitor {
-+ visit(StartController startController): void
-+ visit(PlayController playController): void
-+ visit(ResumeController resumeController): void
+abstract class mastermind.controllers.AddProposalController [[AddProposalController.html]] {
+    +AddProposalController(Game, State)
+    +execute(): void
 }
 
-mastermind.controllers.ControllerVisitor .down.> mastermind.controllers.StartController
-mastermind.controllers.ControllerVisitor .down.> mastermind.controllers.PlayController
-mastermind.controllers.ControllerVisitor .down.> mastermind.controllers.ResumeController
+mastermind.controllers.UseCaseController <|-- mastermind.controllers.AddProposalController
+mastermind.controllers.AddProposalController ..> mastermind.models.ProposedCombination
 
-class mastermind.controllers.Logic {
-- final state: State
-- final controllers: Map<StateValue, UseCaseController>
-+ Logic()
-+ getController(): UseCaseController
+abstract class mastermind.controllers.Logic [[Logic.html]] {
+    {abstract} +createStartController(Game, State): StartController
+    {abstract} +createPlayController(Game, State): PlayController
+    {abstract} +createResumeController(Game, State): ResumeController
 }
 
 mastermind.controllers.Logic *-up-> mastermind.models.State
 mastermind.controllers.Logic *-up-> mastermind.models.StateValue
 mastermind.controllers.Logic *-down-> mastermind.controllers.UseCaseController
+mastermind.controllers.Logic *-down-> mastermind.controllers.StartController
+mastermind.controllers.Logic *-down-> mastermind.controllers.PlayController
+mastermind.controllers.Logic *-down-> mastermind.controllers.ResumeController
 mastermind.controllers.Logic .down.> mastermind.models.Game
 
-abstract class mastermind.controllers.UseCaseController {
-# final game: Game
-# final state: State
-UseCaseController(Game game, State state)
-+ next(): void
-+ {abstract} accept(ControllerVisitor controllerVisitor): void
+abstract class mastermind.controllers.PlayController [[PlayController.html]] {
+    +PlayController(Game, State)
+    +execute(): void
+    {abstract} +createAddProposalController(Game, State): AddProposalController
 }
 
-mastermind.controllers.UseCaseController *-up-> mastermind.models.Game
-mastermind.controllers.UseCaseController *-up-> mastermind.models.State
-mastermind.controllers.UseCaseController .down.> mastermind.controllers.ControllerVisitor
+mastermind.controllers.UseCaseController <|-- mastermind.controllers.PlayController
+mastermind.controllers.PlayController *-> mastermind.controllers.AddProposalController
 
-class mastermind.controllers.PlayController extends mastermind.controllers.UseCaseController {
-+ PlayController(Game game, State state)
-+ addProposedCombination(ProposedCombination proposedCombination): void
-+ getAttempts(): int
-+ getProposedCombination(int position): ProposedCombination
-+ getResult(int position): Result
-+ isWinner(): boolean
-+ isLooser(): boolean
-+ accept(ControllerVisitor controllerVisitor): void
+abstract class mastermind.controllers.ResumeController [[ResumeController.html]] {
+    +ResumeController(Game, State)
+    +execute(): void
 }
 
-mastermind.controllers.PlayController .up.> mastermind.controllers.ControllerVisitor
-mastermind.controllers.PlayController .down.> mastermind.models.ProposedCombination
-mastermind.controllers.PlayController .down.> mastermind.models.Result
+mastermind.controllers.UseCaseController <|-- mastermind.controllers.ResumeController
 
-class mastermind.controllers.ResumeController extends mastermind.controllers.UseCaseController {
-+ ResumeController(Game game, State state)
-+ resume(): void
-+ accept(ControllerVisitor controllerVisitor): void
+abstract class mastermind.controllers.StartController [[StartController.html]] {
+    +StartController(Game, State)
+    +execute(): void
 }
 
-mastermind.controllers.ResumeController .up.> mastermind.controllers.ControllerVisitor
+mastermind.controllers.UseCaseController <|-- mastermind.controllers.StartController
 
-class mastermind.controllers.StartController extends mastermind.controllers.UseCaseController {
-+StartController(Game game, State state)
-+ accept(ControllerVisitor controllerVisitor): void
+abstract class mastermind.controllers.UseCaseController [[UseCaseController.html]] {
+    #game: Game
+    #state: State
+    #view: View
+    +next(): void
+    {abstract} +createView(): View
+    {abstract} +execute(): void
 }
 
-mastermind.controllers.StartController .up.> mastermind.controllers.ControllerVisitor
+
+
+....
+
+=== Paquete _mastermind.controllers_
+
+
+[plantuml,paqueteMastermindControllerConsole,svg]
+
+....
+class amartinm.mastermind.controllers.console.AddProposalControllerImplementation [[AddProposalControllerImplementation.html]] {
+    +AddProposalControllerImplementation(Game, State)
+    +createView(): View
+}
+
+abstract class amartinm.mastermind.controllers.AddProposalController
+amartinm.mastermind.controllers.AddProposalController <|-- amartinm.mastermind.controllers.console.AddProposalControllerImplementation
+amartinm.mastermind.controllers.console.AddProposalControllerImplementation --> amartinm.mastermind.views.console.ProposedCombinationView
+
+
+class amartinm.mastermind.controllers.console.LogicConsole [[LogicConsole.html]] {
+    +createStartController(Game, State): StartController
+    +createPlayController(Game, State): PlayController
+    +createResumeController(Game, State): ResumeController
+}
+
+amartinm.mastermind.controllers.Logic <|-- amartinm.mastermind.controllers.console.LogicConsole
+mastermind.controllers.console.LogicConsole --> amartinm.mastermind.controllers.console.StartControllerImplementation
+
+class amartinm.mastermind.controllers.console.ResumeControllerImplementation [[ResumeControllerImplementation.html]] {
+    +ResumeControllerImplementation(Game, State)
+    +createView(): View
+}
+
+class amartinm.mastermind.controllers.console.PlayControllerImplementation [[PlayControllerImplementation.html]] {
+    +PlayControllerImplementation(Game, State)
+    +createView(): View
+    +createAddProposalController(Game, State): AddProposalController
+}
+
+class amartinm.mastermind.controllers.console.StartControllerImplementation [[StartControllerImplementation.html]] {
+    +StartControllerImplementation(Game, State)
+    +createView(): View
+}
+
+
+
+abstract class amartinm.mastermind.controllers.Logic {
+    {abstract} +createStartController(Game, State): StartController
+    {abstract} +createPlayController(Game, State): PlayController
+    {abstract} +createResumeController(Game, State): ResumeController
+}
+
+abstract class amartinm.mastermind.controllers.ResumeController
+amartinm.mastermind.controllers.ResumeController <|-- amartinm.mastermind.controllers.console.ResumeControllerImplementation
+
+abstract amartinm.mastermind.controllers.StartController
+amartinm.mastermind.controllers.StartController <|-- amartinm.mastermind.controllers.console.StartControllerImplementation
+
+abstract class amartinm.mastermind.controllers.console.amartinm.mastermind.controllers.PlayController {
+    {abstract} +createAddProposalController(Game, State): amartinm.mastermind.controllers.console.AddProposalController
+}
+amartinm.mastermind.controllers.PlayController <|-- amartinm.mastermind.controllers.console.PlayControllerImplementation
+
 ....
 
 === Paquete _mastermind.utils_

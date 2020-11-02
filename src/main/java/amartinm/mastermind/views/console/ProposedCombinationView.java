@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class ProposedCombinationView extends WithConsoleView implements View {
 
-    public static final String PROPOSED_COMBINATION = "proposedCombination";
+    private static final String PROPOSED_COMBINATION = "proposedCombination";
 
     public static void write(ProposedCombination proposedCombination) {
         for (Color color : proposedCombination.getColors()) {
