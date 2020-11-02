@@ -83,7 +83,7 @@
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="imageblock">
 <div class="content">
-<img src="build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/images/Dibujo.jpg" alt="Dibujo">
+<img src="build/docs/asciidoc/images/Dibujo.jpg" alt="Dibujo">
 </div>
 </div></div></td>
 </tr>
@@ -105,7 +105,7 @@
 <h3 id="arquitectura">Arquitectura</h3>
 <div class="imageblock">
 <div class="content">
-<img src="build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/images/version2Arquitectura.svg" alt="version2Arquitectura" width="810" height="766">
+<img src="build/docs/asciidoc/images/version2Arquitectura.svg" alt="version2Arquitectura" width="810" height="766">
 </div>
 </div>
 </div>
@@ -113,7 +113,7 @@
 <h3 id="paquete-mastermind">Paquete <em>mastermind</em></h3>
 <div class="imageblock">
 <div class="content">
-<img src="build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/images/version2Mastermind.svg" alt="version2Mastermind" width="740" height="494">
+<img src="build/docs/asciidoc/images/version2Mastermind.svg" alt="version2Mastermind" width="740" height="494">
 </div>
 </div>
 </div>
@@ -121,7 +121,7 @@
 <h3 id="paquete-mastermind-views">Paquete <em>mastermind.views</em></h3>
 <div class="imageblock">
 <div class="content">
-<img src="build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/images/mastermindViews.svg" alt="mastermindViews" width="2827" height="1602">
+<img src="build/docs/asciidoc/images/mastermindViews.svg" alt="mastermindViews" width="2827" height="1602">
 </div>
 </div>
 </div>
@@ -129,7 +129,7 @@
 <h3 id="paquete-mastermind-models">Paquete <em>mastermind.models</em></h3>
 <div class="imageblock">
 <div class="content">
-<img src="build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/images/paqueteMastermindModel.svg" alt="paqueteMastermindModel" width="1079" height="1641">
+<img src="build/docs/asciidoc/images/paqueteMastermindModel.svg" alt="paqueteMastermindModel" width="1079" height="1641">
 </div>
 </div>
 </div>
@@ -137,7 +137,7 @@
 <h3 id="paquete-mastermind-controllers">Paquete <em>mastermind.controllers</em></h3>
 <div class="imageblock">
 <div class="content">
-<img src="build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/images/paqueteMastermindController.svg" alt="paqueteMastermindController" width="1832" height="939">
+<img src="build/docs/asciidoc/images/paqueteMastermindController.svg" alt="paqueteMastermindController" width="1832" height="939">
 </div>
 </div>
 </div>
@@ -145,7 +145,7 @@
 <h3 id="paquete-mastermind-controllers-implementation">Paquete <em>mastermind.controllers.implementation</em></h3>
 <div class="imageblock">
 <div class="content">
-<img src="build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/images/mastermindControllersImplementation.svg" alt="mastermindControllersImplementation" width="1982" height="717">
+<img src="build/docs/asciidoc/images/mastermindControllersImplementation.svg" alt="mastermindControllersImplementation" width="1982" height="717">
 </div>
 </div>
 </div>
@@ -153,7 +153,7 @@
 <h3 id="paquete-mastermind-distributed">Paquete <em>mastermind.distributed</em></h3>
 <div class="imageblock">
 <div class="content">
-<img src="build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/images/mastermindDistributed.svg" alt="mastermindDistributed" width="4930" height="840">
+<img src="build/docs/asciidoc/images/mastermindDistributed.svg" alt="mastermindDistributed" width="4930" height="840">
 </div>
 </div>
 </div>
@@ -161,7 +161,7 @@
 <h3 id="paquete-mastermind-distributed-dispatchers">Paquete <em>mastermind.distributed.dispatchers</em></h3>
 <div class="imageblock">
 <div class="content">
-<img src="build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/images/mastermindDistributedDispatchers.svg" alt="mastermindDistributedDispatchers" width="3269" height="845">
+<img src="build/docs/asciidoc/images/mastermindDistributedDispatchers.svg" alt="mastermindDistributedDispatchers" width="3269" height="845">
 </div>
 </div>
 </div>
@@ -169,7 +169,7 @@
 <h3 id="paquete-mastermind-distributed-dispatchers-undoredo">Paquete <em>mastermind.distributed.dispatchers.undoredo</em></h3>
 <div class="imageblock">
 <div class="content">
-<img src="build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/images/mastermindDistributedDispatchersUndoRedo.svg" alt="mastermindDistributedDispatchersUndoRedo" width="1040" height="420">
+<img src="build/docs/asciidoc/images/mastermindDistributedDispatchersUndoRedo.svg" alt="mastermindDistributedDispatchersUndoRedo" width="1040" height="420">
 </div>
 </div>
 </div>
@@ -177,7 +177,7 @@
 <h3 id="paquete-mastermind-utils">Paquete <em>mastermind.utils</em></h3>
 <div class="imageblock">
 <div class="content">
-<img src="build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/images/mastermindUtils2.svg" alt="mastermindUtils2" width="987" height="575">
+<img src="build/docs/asciidoc/images/mastermindUtils2.svg" alt="mastermindUtils2" width="987" height="575">
 </div>
 </div>
 </div>
@@ -242,7 +242,7 @@
 <div class="sectionbody">
 <div class="imageblock">
 <div class="content">
-<img src="build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/images/diagramaImplementacion.svg" alt="diagramaImplementacion" width="1297" height="353">
+<img src="build/docs/asciidoc/images/diagramaImplementacion.svg" alt="diagramaImplementacion" width="1297" height="353">
 </div>
 </div>
 </div>
@@ -252,7 +252,7 @@
 <div class="sectionbody">
 <div class="imageblock">
 <div class="content">
-<img src="build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/build/docs/asciidoc/images/diagramaDespliegue.svg" alt="diagramaDespliegue" width="220" height="202">
+<img src="build/docs/asciidoc/images/diagramaDespliegue.svg" alt="diagramaDespliegue" width="220" height="202">
 </div>
 </div>
 </div>
