@@ -91,6 +91,22 @@ mastermind.Mastermind <|-- mastermind.ConsoleMastermind
 
 mastermind.Mastermind <|-- mastermind.GraphicsMastermind
 
+class mastermind.controllers.console.LogicConsole [[LogicConsole.html]] {
+    +createStartController(Game, State): StartController
+    +createPlayController(Game, State): PlayController
+    +createResumeController(Game, State): ResumeController
+}
+
+mastermind.ConsoleMastermind ..> mastermind.controllers.console.LogicConsole
+
+class mastermind.controllers.graphics.LogicGraphics [[LogicGraphics.html]] {
+    +createStartController(Game, State): StartController
+    +createPlayController(Game, State): PlayController
+    +createResumeController(Game, State): ResumeController
+}
+
+mastermind.GraphicsMastermind ..> mastermind.controllers.graphics.LogicGraphics
+
 
 abstract class mastermind.controllers.Logic [[Logic.html]] {
 +getController(): UseCaseController
@@ -98,6 +114,9 @@ abstract class mastermind.controllers.Logic [[Logic.html]] {
 {abstract} +createPlayController(Game, State): PlayController
 {abstract} +createResumeController(Game, State): ResumeController
 }
+
+mastermind.controllers.Logic <|-- mastermind.controllers.console.LogicConsole
+mastermind.controllers.Logic <|-- mastermind.controllers.graphics.LogicGraphics
 
 abstract class mastermind.controllers.UseCaseController [[UseCaseController.html]] {
     #game: Game
@@ -169,10 +188,6 @@ mastermind.views.View <|.. mastermind.views.graphics.PlayView
 === Paquete _mastermind.views.console_
 
 [plantuml,mastermindViewsConsole,svg]
-
-=== Paquete _mastermind.views.console_
-
-[plantuml,mastermindViews,svg]
 
 ....
 abstract class utils.WithConsoleView [[WithConsoleView.html]] {
@@ -469,65 +484,137 @@ abstract class mastermind.controllers.UseCaseController [[UseCaseController.html
 
 ....
 
-=== Paquete _mastermind.controllers_
+=== Paquete _mastermind.controllers.console_
 
 
 [plantuml,paqueteMastermindControllerConsole,svg]
 
 ....
-class amartinm.mastermind.controllers.console.AddProposalControllerImplementation [[AddProposalControllerImplementation.html]] {
+class mastermind.controllers.console.AddProposalControllerImplementation [[AddProposalControllerImplementation.html]] {
     +AddProposalControllerImplementation(Game, State)
     +createView(): View
 }
 
-abstract class amartinm.mastermind.controllers.AddProposalController
-amartinm.mastermind.controllers.AddProposalController <|-- amartinm.mastermind.controllers.console.AddProposalControllerImplementation
-amartinm.mastermind.controllers.console.AddProposalControllerImplementation --> amartinm.mastermind.views.console.ProposedCombinationView
+abstract class mastermind.controllers.AddProposalController
+mastermind.controllers.AddProposalController <|-- mastermind.controllers.console.AddProposalControllerImplementation
+mastermind.controllers.console.AddProposalControllerImplementation ..> mastermind.views.console.ProposedCombinationView
 
 
-class amartinm.mastermind.controllers.console.LogicConsole [[LogicConsole.html]] {
+class mastermind.controllers.console.LogicConsole [[LogicConsole.html]] {
     +createStartController(Game, State): StartController
     +createPlayController(Game, State): PlayController
     +createResumeController(Game, State): ResumeController
 }
 
-amartinm.mastermind.controllers.Logic <|-- amartinm.mastermind.controllers.console.LogicConsole
-mastermind.controllers.console.LogicConsole --> amartinm.mastermind.controllers.console.StartControllerImplementation
-
-class amartinm.mastermind.controllers.console.ResumeControllerImplementation [[ResumeControllerImplementation.html]] {
-    +ResumeControllerImplementation(Game, State)
-    +createView(): View
-}
-
-class amartinm.mastermind.controllers.console.PlayControllerImplementation [[PlayControllerImplementation.html]] {
-    +PlayControllerImplementation(Game, State)
-    +createView(): View
-    +createAddProposalController(Game, State): AddProposalController
-}
-
-class amartinm.mastermind.controllers.console.StartControllerImplementation [[StartControllerImplementation.html]] {
-    +StartControllerImplementation(Game, State)
-    +createView(): View
-}
-
-
-
-abstract class amartinm.mastermind.controllers.Logic {
+abstract class mastermind.controllers.Logic {
     {abstract} +createStartController(Game, State): StartController
     {abstract} +createPlayController(Game, State): PlayController
     {abstract} +createResumeController(Game, State): ResumeController
 }
 
-abstract class amartinm.mastermind.controllers.ResumeController
-amartinm.mastermind.controllers.ResumeController <|-- amartinm.mastermind.controllers.console.ResumeControllerImplementation
+mastermind.controllers.Logic <|-- mastermind.controllers.console.LogicConsole
+mastermind.controllers.console.LogicConsole --> mastermind.controllers.console.StartControllerImplementation
 
-abstract amartinm.mastermind.controllers.StartController
-amartinm.mastermind.controllers.StartController <|-- amartinm.mastermind.controllers.console.StartControllerImplementation
 
-abstract class amartinm.mastermind.controllers.console.amartinm.mastermind.controllers.PlayController {
-    {abstract} +createAddProposalController(Game, State): amartinm.mastermind.controllers.console.AddProposalController
+class mastermind.controllers.console.PlayControllerImplementation [[PlayControllerImplementation.html]] {
+    +PlayControllerImplementation(Game, State)
+    +createView(): View
+    +createAddProposalController(Game, State): AddProposalController
 }
-amartinm.mastermind.controllers.PlayController <|-- amartinm.mastermind.controllers.console.PlayControllerImplementation
+
+mastermind.controllers.PlayController <|-- mastermind.controllers.console.PlayControllerImplementation
+mastermind.controllers.console.PlayControllerImplementation ..> mastermind.views.console.PlayView
+mastermind.controllers.console.PlayControllerImplementation ..> mastermind.controllers.console.AddProposalControllerImplementation
+
+class mastermind.controllers.console.ResumeControllerImplementation [[ResumeControllerImplementation.html]] {
+    +ResumeControllerImplementation(Game, State)
+    +createView(): View
+}
+
+abstract class mastermind.controllers.ResumeController
+mastermind.controllers.ResumeController <|-- mastermind.controllers.console.ResumeControllerImplementation
+mastermind.controllers.console.ResumeControllerImplementation ..> mastermind.views.console.ResumeView
+
+class mastermind.controllers.console.StartControllerImplementation [[StartControllerImplementation.html]] {
+    +StartControllerImplementation(Game, State)
+    +createView(): View
+}
+
+abstract mastermind.controllers.StartController
+mastermind.controllers.StartController <|-- mastermind.controllers.console.StartControllerImplementation
+mastermind.controllers.console.StartControllerImplementation ..> mastermind.views.console.StartView
+
+abstract class mastermind.controllers.PlayController {
+    {abstract} +createAddProposalController(Game, State): mastermind.controllers.console.AddProposalController
+}
+
+....
+
+=== Paquete _mastermind.controllers.graphics_
+
+
+[plantuml,paqueteMastermindControllerGraphics,svg]
+
+....
+class mastermind.controllers.graphics.AddProposalControllerImplementation [[AddProposalControllerImplementation.html]] {
+    +AddProposalControllerImplementation(Game, State)
+    +createView(): View
+}
+
+abstract class mastermind.controllers.AddProposalController
+mastermind.controllers.AddProposalController <|-- mastermind.controllers.graphics.AddProposalControllerImplementation
+mastermind.controllers.graphics.AddProposalControllerImplementation ..> mastermind.views.graphics.ProposedCombinationView
+
+
+class mastermind.controllers.graphics.LogicGraphics [[LogicGraphics.html]] {
+    +createStartController(Game, State): StartController
+    +createPlayController(Game, State): PlayController
+    +createResumeController(Game, State): ResumeController
+}
+
+abstract class mastermind.controllers.Logic {
+    {abstract} +createStartController(Game, State): StartController
+    {abstract} +createPlayController(Game, State): PlayController
+    {abstract} +createResumeController(Game, State): ResumeController
+}
+
+mastermind.controllers.Logic <|-- mastermind.controllers.graphics.LogicGraphics
+mastermind.controllers.graphics.LogicGraphics --> mastermind.controllers.graphics.StartControllerImplementation
+mastermind.controllers.graphics.LogicGraphics --> mastermind.controllers.graphics.PlayControllerImplementation
+mastermind.controllers.graphics.LogicGraphics --> mastermind.controllers.graphics.ResumeControllerImplementation
+
+
+class mastermind.controllers.graphics.PlayControllerImplementation [[PlayControllerImplementation.html]] {
+    +PlayControllerImplementation(Game, State)
+    +createView(): View
+    +createAddProposalController(Game, State): AddProposalController
+}
+
+mastermind.controllers.PlayController <|-- mastermind.controllers.graphics.PlayControllerImplementation
+mastermind.controllers.graphics.PlayControllerImplementation ..> mastermind.views.graphics.PlayView
+mastermind.controllers.graphics.PlayControllerImplementation ..> mastermind.controllers.graphics.AddProposalControllerImplementation
+
+class mastermind.controllers.graphics.ResumeControllerImplementation [[ResumeControllerImplementation.html]] {
+    +ResumeControllerImplementation(Game, State)
+    +createView(): View
+}
+
+abstract class mastermind.controllers.ResumeController
+mastermind.controllers.ResumeController <|-- mastermind.controllers.graphics.ResumeControllerImplementation
+mastermind.controllers.graphics.ResumeControllerImplementation ..> mastermind.views.graphics.ResumeView
+
+class mastermind.controllers.graphics.StartControllerImplementation [[StartControllerImplementation.html]] {
+    +StartControllerImplementation(Game, State)
+    +createView(): View
+}
+
+abstract mastermind.controllers.StartController
+mastermind.controllers.StartController <|-- mastermind.controllers.graphics.StartControllerImplementation
+mastermind.controllers.graphics.StartControllerImplementation ..> mastermind.views.graphics.StartView
+
+abstract class mastermind.controllers.PlayController {
+    {abstract} +createAddProposalController(Game, State): mastermind.controllers.graphics.AddProposalController
+}
 
 ....
 
@@ -595,6 +682,10 @@ package "  "  as mastermind {
 }
 package "  "  as mastermind.controllers {
 }
+package "  "  as mastermind.controllers.console {
+}
+package "  "  as mastermind.controllers.graphics {
+}
 package "  "  as mastermind.models {
 }
 package "  "  as mastermind.views {
@@ -614,6 +705,8 @@ package "  "  as java.util {
 
 jar *--> mastermind
 jar *--> mastermind.controllers
+mastermind.controllers *--> mastermind.controllers.console
+mastermind.controllers *--> mastermind.controllers.graphics
 jar *--> mastermind.models
 jar *--> mastermind.views
 mastermind.views *--> mastermind.views.console

@@ -11,7 +11,7 @@
 </head>
 <body class="book">
 <div id="header">
-<h1>Master Mind. Solución 8.2. <strong>mvp.pm.withDoubleDispatching</strong></h1>
+<h1>Master Mind. Solución 16.1. <strong>mvp.pv</strong></h1>
 <div class="details">
 <span id="author" class="author">Álvaro Martín Martín</span><br>
 <span id="email" class="email"><a href="mailto:amartinm82@gmail.com">amartinm82@gmail.com</a></span><br>
@@ -25,9 +25,12 @@
 <ul class="sectlevel2">
 <li><a href="#arquitectura">Arquitectura</a></li>
 <li><a href="#paquete-mastermind">Paquete <em>mastermind</em></a></li>
-<li><a href="#paquete-mastermind-views">Paquete <em>mastermind.views</em></a></li>
+<li><a href="#paquete-mastermind-views-graphics">Paquete <em>mastermind.views.graphics</em></a></li>
+<li><a href="#paquete-mastermind-views-console">Paquete <em>mastermind.views.console</em></a></li>
 <li><a href="#paquete-mastermind-models">Paquete <em>mastermind.models</em></a></li>
 <li><a href="#paquete-mastermind-controllers">Paquete <em>mastermind.controllers</em></a></li>
+<li><a href="#paquete-mastermind-controllers-console">Paquete <em>mastermind.controllers.console</em></a></li>
+<li><a href="#paquete-mastermind-controllers-graphics">Paquete <em>mastermind.controllers.graphics</em></a></li>
 <li><a href="#paquete-mastermind-utils">Paquete <em>mastermind.utils</em></a></li>
 </ul>
 </li>
@@ -79,7 +82,7 @@
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="imageblock">
 <div class="content">
-<img src="images/Dibujo.jpg" alt="Dibujo">
+<img src="build/docs/asciidoc/images/Dibujo.jpg" alt="Dibujo">
 </div>
 </div></div></td>
 </tr>
@@ -93,7 +96,7 @@
 <div class="ulist">
 <ul>
 <li>
-<p>Arquitectura Documento/Vista mediante <strong>Patrón de Vista Separada</strong></p>
+<p>Arquitectura Documento/Vista mediante <strong>Patrón de Vista Pasiva</strong></p>
 </li>
 </ul>
 </div>
@@ -101,7 +104,7 @@
 <h3 id="arquitectura">Arquitectura</h3>
 <div class="imageblock">
 <div class="content">
-<img src="images/version2Arquitectura.svg" alt="version2Arquitectura" width="754" height="531">
+<img src="build/docs/asciidoc/images/version2Arquitectura.svg" alt="version2Arquitectura" width="800" height="578">
 </div>
 </div>
 </div>
@@ -109,15 +112,23 @@
 <h3 id="paquete-mastermind">Paquete <em>mastermind</em></h3>
 <div class="imageblock">
 <div class="content">
-<img src="images/version2Mastermind.svg" alt="version2Mastermind" width="998" height="456">
+<img src="build/docs/asciidoc/images/version2Mastermind.svg" alt="version2Mastermind" width="1018" height="519">
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="paquete-mastermind-views">Paquete <em>mastermind.views</em></h3>
+<h3 id="paquete-mastermind-views-graphics">Paquete <em>mastermind.views.graphics</em></h3>
 <div class="imageblock">
 <div class="content">
-<img src="images/mastermindViews.svg" alt="mastermindViews" width="2777" height="940">
+<img src="build/docs/asciidoc/images/mastermindViewsGraphics.svg" alt="mastermindViewsGraphics" width="1474" height="322">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="paquete-mastermind-views-console">Paquete <em>mastermind.views.console</em></h3>
+<div class="imageblock">
+<div class="content">
+<img src="build/docs/asciidoc/images/mastermindViewsConsole.svg" alt="mastermindViewsConsole" width="1742" height="1154">
 </div>
 </div>
 </div>
@@ -125,7 +136,7 @@
 <h3 id="paquete-mastermind-models">Paquete <em>mastermind.models</em></h3>
 <div class="imageblock">
 <div class="content">
-<img src="images/paqueteMastermindModel.svg" alt="paqueteMastermindModel" width="974" height="1148">
+<img src="build/docs/asciidoc/images/paqueteMastermindModel.svg" alt="paqueteMastermindModel" width="974" height="1148">
 </div>
 </div>
 </div>
@@ -133,7 +144,23 @@
 <h3 id="paquete-mastermind-controllers">Paquete <em>mastermind.controllers</em></h3>
 <div class="imageblock">
 <div class="content">
-<img src="images/paqueteMastermindController.svg" alt="paqueteMastermindController" width="1861" height="756">
+<img src="build/docs/asciidoc/images/paqueteMastermindController.svg" alt="paqueteMastermindController" width="1783" height="504">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="paquete-mastermind-controllers-console">Paquete <em>mastermind.controllers.console</em></h3>
+<div class="imageblock">
+<div class="content">
+<img src="build/docs/asciidoc/images/paqueteMastermindControllerConsole.svg" alt="paqueteMastermindControllerConsole" width="1655" height="591">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="paquete-mastermind-controllers-graphics">Paquete <em>mastermind.controllers.graphics</em></h3>
+<div class="imageblock">
+<div class="content">
+<img src="build/docs/asciidoc/images/paqueteMastermindControllerGraphics.svg" alt="paqueteMastermindControllerGraphics" width="1596" height="737">
 </div>
 </div>
 </div>
@@ -141,7 +168,7 @@
 <h3 id="paquete-mastermind-utils">Paquete <em>mastermind.utils</em></h3>
 <div class="imageblock">
 <div class="content">
-<img src="images/mastermindUtils2.svg" alt="mastermindUtils2" width="529" height="397">
+<img src="build/docs/asciidoc/images/mastermindUtils2.svg" alt="mastermindUtils2" width="529" height="397">
 </div>
 </div>
 </div>
@@ -206,7 +233,7 @@
 <div class="sectionbody">
 <div class="imageblock">
 <div class="content">
-<img src="images/diagramaImplementacion.svg" alt="diagramaImplementacion" width="1157" height="254">
+<img src="build/docs/asciidoc/images/diagramaImplementacion.svg" alt="diagramaImplementacion" width="1288" height="254">
 </div>
 </div>
 </div>
@@ -216,7 +243,7 @@
 <div class="sectionbody">
 <div class="imageblock">
 <div class="content">
-<img src="images/diagramaDespliegue.svg" alt="diagramaDespliegue" width="220" height="202">
+<img src="build/docs/asciidoc/images/diagramaDespliegue.svg" alt="diagramaDespliegue" width="220" height="202">
 </div>
 </div>
 </div>
@@ -237,7 +264,7 @@
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1<br>
-Last updated 2020-10-19 11:15:20 +0200
+Last updated 2020-11-02 15:48:29 +0100
 </div>
 </div>
 </html>
