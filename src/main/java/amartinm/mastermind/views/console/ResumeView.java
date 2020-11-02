@@ -1,18 +1,19 @@
 package amartinm.mastermind.views.console;
 
-import amartinm.mastermind.controllers.ResumeController;
+import amartinm.mastermind.views.View;
 import amartinm.utils.YesNoDialog;
 
-class ResumeView {
+import java.util.Collections;
+import java.util.Map;
 
-    void interact(ResumeController resumeController) {
+public class ResumeView implements View {
+
+    public static final String NEW_GAME = "newGame";
+
+    public Map<String, Object> interact(Map<String, Object> model) {
         MessageView.RESUME.write();
         boolean newGame = new YesNoDialog().read();
-        if (newGame) {
-            resumeController.resume();
-        } else {
-            resumeController.next();
-        }
+        return Collections.singletonMap(NEW_GAME, newGame);
     }
 
 }

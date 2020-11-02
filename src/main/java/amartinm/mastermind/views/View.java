@@ -1,9 +1,9 @@
 package amartinm.mastermind.views;
 
-import amartinm.mastermind.controllers.UseCaseController;
+import java.util.Map;
 
-public abstract class View {
+public interface View {
 
-    public abstract void interact(UseCaseController controller);
+    Map<String, Object> interact(Map<String, Object> model);
 
 }

@@ -1,13 +1,15 @@
 package amartinm.mastermind.views.console;
 
-import amartinm.mastermind.controllers.StartController;
+import amartinm.mastermind.views.View;
 
-class StartView {
+import java.util.Map;
 
-    protected void interact(StartController startController) {
+public class StartView implements View {
+
+    public Map<String, Object> interact(Map<String, Object> model) {
         MessageView.TITLE.writeln();
         new SecretCombinationView().writeln();
-        startController.next();
+        return null;
     }
 
 }

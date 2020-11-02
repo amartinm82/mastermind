@@ -2,20 +2,29 @@ package amartinm.mastermind.controllers;
 
 import amartinm.mastermind.models.Game;
 import amartinm.mastermind.models.State;
+import amartinm.mastermind.views.console.ResumeView;
 
-public class ResumeController extends UseCaseController {
+import java.util.Map;
+
+public abstract class ResumeController extends UseCaseController {
 
     public ResumeController(Game game, State state) {
         super(game, state);
     }
 
-    public void resume() {
+    private void resume() {
         this.game.clear();
         this.state.reset();
     }
 
-    @Override
-    public void accept(ControllerVisitor controllerVisitor) {
-        controllerVisitor.visit(this);
+    public void execute() {
+        Map<String, Object> viewData = this.view.interact(null);
+        boolean newGame = (boolean) viewData.get(ResumeView.NEW_GAME);
+        if (newGame) {
+            this.resume();
+        } else {
+            this.next();
+        }
     }
+
 }
