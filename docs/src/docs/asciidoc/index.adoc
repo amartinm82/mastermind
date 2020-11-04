@@ -38,10 +38,7 @@ image::Dibujo.jpg[]
 package mastermind #DDDDDD { } 
 mastermind .down.> mastermind.controllers
 
-package mastermind.controllers #DDDDDD {
-    package mastermind.controllers.console {}
-    package mastermind.controllers.graphics {}
-}
+package mastermind.controllers #DDDDDD {}
 mastermind.controllers .down.> mastermind.models
 mastermind.controllers .down.> mastermind.views
 
