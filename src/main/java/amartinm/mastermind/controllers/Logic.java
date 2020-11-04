@@ -3,22 +3,23 @@ package amartinm.mastermind.controllers;
 import amartinm.mastermind.models.Game;
 import amartinm.mastermind.models.State;
 import amartinm.mastermind.models.StateValue;
+import amartinm.mastermind.views.ViewFactory;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class Logic {
+public class Logic {
 
     private final State state;
     private final Map<StateValue, UseCaseController> controllers;
 
-    public Logic() {
+    public Logic(ViewFactory viewFactory) {
         Game game = new Game();
         this.state = new State();
         this.controllers = new HashMap<>();
-        this.controllers.put(StateValue.INITIAL, this.createStartController(game, this.state));
-        this.controllers.put(StateValue.IN_GAME, this.createPlayController(game, this.state));
-        this.controllers.put(StateValue.RESUME, this.createResumeController(game, this.state));
+        this.controllers.put(StateValue.INITIAL, new StartController(game, this.state, viewFactory));
+        this.controllers.put(StateValue.IN_GAME, new PlayController(game, this.state, viewFactory));
+        this.controllers.put(StateValue.RESUME, new ResumeController(game, this.state, viewFactory));
         this.controllers.put(StateValue.EXIT, null);
     }
 
@@ -26,9 +27,4 @@ public abstract class Logic {
         return this.controllers.get(this.state.getValueState());
     }
 
-    public abstract StartController createStartController(Game game, State state);
-
-    public abstract PlayController createPlayController(Game game, State state);
-
-    public abstract ResumeController createResumeController(Game game, State state);
 }

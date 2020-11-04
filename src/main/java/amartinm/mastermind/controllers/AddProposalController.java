@@ -3,15 +3,17 @@ package amartinm.mastermind.controllers;
 import amartinm.mastermind.models.Game;
 import amartinm.mastermind.models.ProposedCombination;
 import amartinm.mastermind.models.State;
+import amartinm.mastermind.views.ViewFactory;
 
 import java.util.Map;
 
-public abstract class AddProposalController extends UseCaseController {
+public class AddProposalController extends UseCaseController {
 
     private static final String PROPOSED_COMBINATION = "proposedCombination";
 
-    public AddProposalController(Game game, State state) {
+    public AddProposalController(Game game, State state, ViewFactory viewFactory) {
         super(game, state);
+        this.view = viewFactory.createProposedCombinationView();
     }
 
     private void addProposedCombination(ProposedCombination proposedCombination) {

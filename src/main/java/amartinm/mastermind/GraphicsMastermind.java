@@ -1,13 +1,13 @@
 package amartinm.mastermind;
 
 import amartinm.mastermind.controllers.Logic;
-import amartinm.mastermind.controllers.graphics.LogicGraphics;
+import amartinm.mastermind.views.graphics.GraphicsViewFactory;
 
 public class GraphicsMastermind extends Mastermind {
 
     @Override
     protected Logic createLogic() {
-        return new LogicGraphics();
+        return new Logic(new GraphicsViewFactory());
     }
 
     public static void main(String[] args) {

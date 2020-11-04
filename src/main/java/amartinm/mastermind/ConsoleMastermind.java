@@ -1,13 +1,13 @@
 package amartinm.mastermind;
 
 import amartinm.mastermind.controllers.Logic;
-import amartinm.mastermind.controllers.console.LogicConsole;
+import amartinm.mastermind.views.console.ConsoleViewFactory;
 
 public class ConsoleMastermind extends Mastermind {
 
     @Override
     protected Logic createLogic() {
-        return new LogicConsole();
+        return new Logic(new ConsoleViewFactory());
     }
 
     public static void main(String[] args) {

@@ -2,11 +2,12 @@ package amartinm.mastermind.controllers;
 
 import amartinm.mastermind.models.Game;
 import amartinm.mastermind.models.State;
+import amartinm.mastermind.views.ViewFactory;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class PlayController extends UseCaseController {
+public class PlayController extends UseCaseController {
 
     private static final String ATTEMPTS = "attempts";
     private static final String PROPOSED_COMBINATIONS = "proposedCombinations";
@@ -16,12 +17,11 @@ public abstract class PlayController extends UseCaseController {
 
     protected final AddProposalController addProposalController;
 
-    public PlayController(Game game, State state) {
+    public PlayController(Game game, State state, ViewFactory viewFactory) {
         super(game, state);
-        this.addProposalController = createAddProposalController(game, state);
+        this.view = viewFactory.createPlayView();
+        this.addProposalController = new AddProposalController(game, state, viewFactory);
     }
-
-    public abstract AddProposalController createAddProposalController(Game game, State state);
 
     @Override
     public void execute() {

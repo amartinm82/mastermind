@@ -2,15 +2,17 @@ package amartinm.mastermind.controllers;
 
 import amartinm.mastermind.models.Game;
 import amartinm.mastermind.models.State;
+import amartinm.mastermind.views.ViewFactory;
 
 import java.util.Map;
 
-public abstract class ResumeController extends UseCaseController {
+public class ResumeController extends UseCaseController {
 
     private static final String NEW_GAME = "newGame";
 
-    public ResumeController(Game game, State state) {
+    public ResumeController(Game game, State state, ViewFactory viewFactory) {
         super(game, state);
+        this.view = viewFactory.createResumeView();
     }
 
     private void resume() {

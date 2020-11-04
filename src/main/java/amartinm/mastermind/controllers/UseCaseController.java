@@ -8,15 +8,12 @@ public abstract class UseCaseController {
 
     protected final Game game;
     protected final State state;
-    protected final View view;
+    protected View view;
 
     UseCaseController(Game game, State state) {
         this.game = game;
         this.state = state;
-        this.view = createView();
     }
-
-    public abstract View createView();
 
     public void next() {
         this.state.next();
